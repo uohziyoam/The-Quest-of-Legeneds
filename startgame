@@ -1,0 +1,6 @@
+#!/bin/bash
+
+printf "\nCompiling source code\n"
+find src/ -name '*.java' | xargs javac -d bin
+printf "\nGame starting\n\n"
+java -Dfile.encoding=UTF-8 -cp "bin/" edu.bu.phuminw.quest.Quest
