@@ -10,13 +10,13 @@ package edu.bu.phuminw.quest.board;
 
 public class Mark {
     private String symbol;
-    
 
     public Mark(String symbol) {
         this.symbol = symbol;
     }
 
-    public String get() {
+    @Override
+    public String toString() {
         return symbol;
     }
 
