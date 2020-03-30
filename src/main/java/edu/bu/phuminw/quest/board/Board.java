@@ -4,7 +4,7 @@
 
 package edu.bu.phuminw.quest.board;
 
-import java.io.PrintStream;
+// import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -120,37 +120,52 @@ public class Board<T> {
     public void print(boolean help) {
         System.out.print("\n\n");
 
-        int mark = 1;
-
         for (int i = 0 ; i < board.size() ; i++) {
-            for (int b = 0 ; b < board.get(0).size() ; b++)
-                System.out.print("+----");
-            System.out.println("+");
             for (int j = 0 ; j < board.get(i).size() ; j++) {
-                if (help) {
-                    PrintStream dummy = (mark<10) ? System.out.printf("| %d  ", mark): System.out.printf("| %d ", mark);
-                    mark++;
-                }
-                else {
-                    try {
-                        if (board.get(i).get(j).isOccupied())
-                            System.out.printf("| %-3s", board.get(i).get(j).getMark().get());
-                        else
-                            System.out.printf("| %-3s", " ");
-                    } catch (Exception e) {
-                        System.out.printf("| ?  ");
-                    }
-                }
-                if (j == board.get(i).size()-1) {
-                    System.out.println("|");
-                }
+                System.out.format("%1$s - %1$s - %1$s  ", board.get(i).get(j).getType());
             }
-            if (i == board.size()-1) {
-                for (int b = 0 ; b < board.get(0).size() ; b++)
-                    System.out.print("+----");
-                System.out.println("+");
+            System.out.println();
+            for (int j = 0 ; j < board.get(i).size() ; j++) {
+                System.out.format("| %1$5s |  ", board.get(i).get(j).getMark());
             }
+            System.out.println();
+            for (int j = 0 ; j < board.get(i).size() ; j++) {
+                System.out.format("%1$s - %1$s - %1$s  ", board.get(i).get(j).getType());
+            }
+            System.out.println("\n");
         }
+
+        // int mark = 1;
+
+        // for (int i = 0 ; i < board.size() ; i++) {
+        //     for (int b = 0 ; b < board.get(0).size() ; b++)
+        //         System.out.print("+----");
+        //     System.out.println("+");
+        //     for (int j = 0 ; j < board.get(i).size() ; j++) {
+        //         if (help) {
+        //             PrintStream dummy = (mark<10) ? System.out.printf("| %d  ", mark): System.out.printf("| %d ", mark);
+        //             mark++;
+        //         }
+        //         else {
+        //             try {
+        //                 if (board.get(i).get(j).isOccupied())
+        //                     System.out.printf("| %-3s", board.get(i).get(j).getMark().get());
+        //                 else
+        //                     System.out.printf("| %-3s", " ");
+        //             } catch (Exception e) {
+        //                 System.out.printf("| ?  ");
+        //             }
+        //         }
+        //         if (j == board.get(i).size()-1) {
+        //             System.out.println("|");
+        //         }
+        //     }
+        //     if (i == board.size()-1) {
+        //         for (int b = 0 ; b < board.get(0).size() ; b++)
+        //             System.out.print("+----");
+        //         System.out.println("+");
+        //     }
+        // }
 
         System.out.println();
     }
