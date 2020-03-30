@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
@@ -34,8 +35,9 @@ import edu.bu.phuminw.quest.util.Team;
 
 public class Quest {
     private int MAXHERO = 3;
-    private final String MARKET = "M";
-    private final String FORBIDDEN = "X";
+    public static final String BUSH = "B";
+    public static final String NEXUS = "N";
+    public static final String FORBIDDEN = "X";
     private StdinWrapper sinwrap;
     private Random rand;
     private Board<Object> board;
@@ -73,36 +75,63 @@ public class Quest {
     }
 
     /**
-     * Assign market and forbidden cell into board
+     * Assign nexus and forbidden cell into board
      */
     
     private void assignCell() {
-        ArrayList<Integer> indexes = new ArrayList<Integer>();
-        int[] size = board.getSize();
+        // ArrayList<Integer> indexes = new ArrayList<Integer>();
+        // int[] size = board.getSize();
 
-        for (int i = 1 ; i <= size[0]*size[1] ; i++)
-            indexes.add(i);
+        // for (int i = 1 ; i <= size[0]*size[1] ; i++)
+        //     indexes.add(i);
         
-        Collections.shuffle(indexes);
+        // Collections.shuffle(indexes);
         
-        int EXPECTED_MARKET = (int) (0.15*indexes.size());
-        int market = 0;
-        int EXPECTED_FORBID = (int) (0.1*indexes.size());
-        int forbid = 0;
+        // int EXPECTED_MARKET = (int) (0.15*indexes.size());
+        // int market = 0;
+        // int EXPECTED_FORBID = (int) (0.1*indexes.size());
+        // int forbid = 0;
 
-        for (Integer i: indexes) {
-            if (market < EXPECTED_MARKET) {
-                board.getCell(i).set(null, new Mark(MARKET));
-                market++;
+        // for (Integer i: indexes) {
+        //     if (market < EXPECTED_MARKET) {
+        //         board.getCell(i).set(null, new Mark(MARKET));
+        //         market++;
+        //     }
+        //     else if (forbid < EXPECTED_FORBID) {
+        //         board.getCell(i).set(null, new Mark(FORBIDDEN));
+        //         forbid++;
+        //     }
+        //     else {
+        //         // Assigned market and forbidden, the rest is as default, so early return
+        //         break; 
+        //     }
+        // }
+
+        int[] boardSize = board.getSize();
+        ArrayList<Integer> plainCell = new ArrayList<Integer>();
+        for (int i = 1 ; i <= boardSize[0]*boardSize[1] ; i++)
+            plainCell.add(i);
+
+        // Assign nexus
+        for (int i: new ArrayList<Integer>(Arrays.asList(1,8))) {
+            for (int j = 1 ; j <= boardSize[1] ; j++) {
+                board.getCell((i-1)*boardSize[1]+j).setType(NEXUS);
+                plainCell.remove((Integer) (i-1)*boardSize[1]+j);
             }
-            else if (forbid < EXPECTED_FORBID) {
-                board.getCell(i).set(null, new Mark(FORBIDDEN));
-                forbid++;
+        }
+
+        // Assign forbidden
+        for (int j: new ArrayList<Integer>(Arrays.asList(3,6))) {
+            for (int i = 1 ; i <= boardSize[0] ; i++) {
+                board.getCell((i-1)*boardSize[1]+j).setType(FORBIDDEN);
+                plainCell.remove((Integer) (i-1)*boardSize[1]+j);
             }
-            else {
-                // Assigned market and forbidden, the rest is as default, so early return
-                break; 
-            }
+        }
+
+        // Assign bush with 25% probability
+        for (int i: plainCell) {
+            if (rand.nextDouble() < 0.25)
+                board.getCell(i).setType(BUSH);
         }
     }
 
@@ -468,7 +497,7 @@ public class Quest {
                     }
                 }
 
-                switch (board.getCell(newPos).getMark().get()) {
+                switch (board.getCell(newPos).getMark().toString()) {
                     case MARKET: market.shop(player);break;
                     case FORBIDDEN: System.out.println("That cell is not accessible");break;
                     // Fight with monsters!
