@@ -4,6 +4,8 @@
 
 package edu.bu.phuminw.quest.board;
 
+import edu.bu.phuminw.quest.Quest;
+
 /**
  * A individual cell of a board
  * 
@@ -13,6 +15,7 @@ package edu.bu.phuminw.quest.board;
 public class Cell<T> {
     private T occupier;
     private Mark mark;
+    private String type;
 
     public Cell(T occ, Mark m) {
         if (occupier == null && m == null) {
@@ -45,6 +48,10 @@ public class Cell<T> {
         }
     }
 
+    public void setType(String t) {
+        type = t;
+    }
+
     public T getOccipier() {
         return occupier;
     }
@@ -53,11 +60,27 @@ public class Cell<T> {
         return mark;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
-        if (occupier == null && mark == null)
-            return "Empty cell";
-        return "Occupier: " + occupier + " with mark " + mark;
+        // String boarderMarker = switch (type) {
+        //     case Quest.NEXUS-> "N";
+        //     case Quest.FORBIDDEN-> "I";
+        //     case Quest.BUSH-> "B";
+        //     default-> "P";
+        // };
+
+        return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s"
+        , switch (type) {
+            case Quest.NEXUS-> "N";
+            case Quest.FORBIDDEN-> "I";
+            case Quest.BUSH-> "B";
+            default-> "P";
+        }
+        , mark);
     }
 
     public boolean isOccupied() {
