@@ -36,8 +36,8 @@ import edu.bu.phuminw.quest.util.Team;
 public class Quest {
     private int MAXHERO = 3;
     public static final String BUSH = "B";
-    public static final String HERO_NEXUS = "HN";
-    public static final String MONSTER_NEXUS = "MN";
+    public static final String HERO_NEXUS = "N";
+    public static final String MONSTER_NEXUS = "N";
     public static final String PLAIN = "P";
     public static final String CAVE = "C";
     public static final String KOULOU = "K";
@@ -120,57 +120,65 @@ public class Quest {
         // Assign monster nexus
         for (int j = 1; j <= boardSize[1]; j++) {
             board.getCell((1 - 1) * boardSize[1] + j).setType(MONSTER_NEXUS);
-            plainCell.remove((Integer) (1 - 1) * boardSize[1] + j);
+            plainCell.remove(Integer.valueOf((1 - 1) * boardSize[1] + j));
         }
 
         // Assign hero nexus
         for (int j = 1; j <= boardSize[1]; j++) {
-            board.getCell((8 - 1) * boardSize[1] + j).setType(MONSTER_NEXUS);
-            plainCell.remove((Integer) (8 - 1) * boardSize[1] + j);
+            board.getCell((8 - 1) * boardSize[1] + j).setType(HERO_NEXUS);
+            plainCell.remove(Integer.valueOf((8 - 1) * boardSize[1] + j));
         }
 
         // Assign forbidden (river)
         for (int j = 1; j <= boardSize[1]; j++) {
             board.getCell((j - 1) * boardSize[1] + 3).setType(FORBIDDEN);
-            plainCell.remove((Integer) (j - 1) * boardSize[1] + 3);
+            // Special mark for forbidden cells
+            board.getCell((j - 1) * boardSize[1] + 3).set(null, new Mark("X X X"));
+            plainCell.remove(Integer.valueOf((j - 1) * boardSize[1] + 3));
         }
 
         for (int j = 1; j <= boardSize[1]; j++) {
             board.getCell((j - 1) * boardSize[1] + 6).setType(FORBIDDEN);
-            plainCell.remove((Integer) (j - 1) * boardSize[1] + 6);
+            // Special mark for forbidden cells
+            board.getCell((j - 1) * boardSize[1] + 6).set(null, new Mark("X X X"));
+            plainCell.remove(Integer.valueOf((j - 1) * boardSize[1] + 6));
         }
 
         // Assign BUSH
         board.getCell(15).setType(BUSH);
-        plainCell.remove(15);
+        plainCell.remove(Integer.valueOf(15));
         board.getCell(16).setType(BUSH);
-        plainCell.remove(16);
+        plainCell.remove(Integer.valueOf(16));
         board.getCell(26).setType(BUSH);
-        plainCell.remove(26);
+        plainCell.remove(Integer.valueOf(26));
         board.getCell(28).setType(BUSH);
-        plainCell.remove(28);
+        plainCell.remove(Integer.valueOf(28));
         board.getCell(36).setType(BUSH);
-        plainCell.remove(36);
+        plainCell.remove(Integer.valueOf(36));
         board.getCell(40).setType(BUSH);
-        plainCell.remove(40);
+        plainCell.remove(Integer.valueOf(40));
 
         // Assign CAVE
         board.getCell(12).setType(CAVE);
-        plainCell.remove(12);
+        plainCell.remove(Integer.valueOf(12));
         board.getCell(25).setType(CAVE);
-        plainCell.remove(25);
+        plainCell.remove(Integer.valueOf(25));
 
         // Assign KOULOU
         board.getCell(29).setType(KOULOU);
-        plainCell.remove(29);
+        plainCell.remove(Integer.valueOf(29));
         board.getCell(31).setType(KOULOU);
-        plainCell.remove(31);
+        plainCell.remove(Integer.valueOf(31));
         board.getCell(41).setType(KOULOU);
-        plainCell.remove(41);
+        plainCell.remove(Integer.valueOf(41));
         board.getCell(42).setType(KOULOU);
-        plainCell.remove(42);
+        plainCell.remove(Integer.valueOf(42));
         board.getCell(44).setType(KOULOU);
-        plainCell.remove(44);
+        plainCell.remove(Integer.valueOf(44));
+
+        // Assign the rest as plain cell
+        for (Integer pos: plainCell)
+            board.getCell(pos).setType(PLAIN);
     }
 
     /**
@@ -521,6 +529,8 @@ public class Quest {
 
     public void play() throws ClassNotFoundException, IOException {
         // Create player for Quest
+        board.print(false);
+        System.exit(0);
         sinwrap.setMessage("Please enter your name: ");
         String token;
         while ((token = sinwrap.next()) == null) {
@@ -528,10 +538,10 @@ public class Quest {
         player = new Player(rand.nextInt(), token, MAXHERO);
         System.out.printf("Welcome %s!\n\n", player.getName());
         sinwrap.setMessage("Want mark do you wanna use? ");
-        while ((token = sinwrap.next()) == null || token.toUpperCase().equals(MARKET)
-                || token.toUpperCase().equals(FORBIDDEN) || token.length() != 1) {
-            System.out.println("Unacceptable mark\n");
-        }
+        // while ((token = sinwrap.next()) == null || token.toUpperCase().equals(MARKET)
+        //         || token.toUpperCase().equals(FORBIDDEN) || token.length() != 1) {
+        //     System.out.println("Unacceptable mark\n");
+        // }
         player.getMark().set(token.toUpperCase() + "^");
 
         selectHero();
@@ -598,9 +608,9 @@ public class Quest {
                 }
 
                 switch (board.getCell(newPos).getMark().toString()) {
-                    case MARKET:
-                        market.shop(player);
-                        break;
+                    // case MARKET:
+                    //     market.shop(player);
+                    //     break;
                     case FORBIDDEN:
                         System.out.println("That cell is not accessible");
                         break;
