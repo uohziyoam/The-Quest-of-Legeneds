@@ -20,8 +20,7 @@ public class Cell<T> {
     public Cell(T occ, Mark m) {
         if (occupier == null && m == null) {
             clear();
-        }
-        else {
+        } else {
             occupier = occ;
             mark = m;
         }
@@ -40,8 +39,7 @@ public class Cell<T> {
         if (occ == null && m == null) {
             clear();
             return false;
-        }
-        else {
+        } else {
             occupier = occ;
             mark = m;
             return true;
@@ -67,20 +65,20 @@ public class Cell<T> {
     @Override
     public String toString() {
         // String boarderMarker = switch (type) {
-        //     case Quest.NEXUS-> "N";
-        //     case Quest.FORBIDDEN-> "I";
-        //     case Quest.BUSH-> "B";
-        //     default-> "P";
+        // case Quest.NEXUS-> "N";
+        // case Quest.FORBIDDEN-> "I";
+        // case Quest.BUSH-> "B";
+        // default-> "P";
         // };
 
-        return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s"
-        , switch (type) {
-            case Quest.NEXUS-> "N";
-            case Quest.FORBIDDEN-> "I";
-            case Quest.BUSH-> "B";
-            default-> "P";
-        }
-        , mark);
+        return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s", switch (type) {
+            case Quest.HERO_NEXUS -> "N";
+            case Quest.FORBIDDEN -> "I";
+            case Quest.BUSH -> "B";
+            case Quest.PLAIN -> "P";
+            case Quest.CAVE -> "C";
+            default -> "P";
+        }, mark);
     }
 
     public boolean isOccupied() {

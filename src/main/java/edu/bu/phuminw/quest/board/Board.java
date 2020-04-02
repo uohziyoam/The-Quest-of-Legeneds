@@ -20,9 +20,9 @@ public class Board<T> {
     public Board(int row, int col) {
         board = new ArrayList<ArrayList<Cell<T>>>(row);
 
-        for (int i = 0 ; i < row ; i++) {
+        for (int i = 0; i < row; i++) {
             board.add(new ArrayList<Cell<T>>(col));
-            for (int j = 0 ; j < col ; j++) {
+            for (int j = 0; j < col; j++) {
                 board.get(i).add(new Cell<T>());
             }
         }
@@ -42,7 +42,9 @@ public class Board<T> {
      */
 
     private int[] posLookup(int pos) {
-        return (1 <= pos && pos <= board.size()*board.get(0).size()) ? new int[]{(pos-1)/board.get(0).size(), (pos-1)%board.get(0).size()} : new int[]{-1, -1};
+        return (1 <= pos && pos <= board.size() * board.get(0).size())
+                ? new int[] { (pos - 1) / board.get(0).size(), (pos - 1) % board.get(0).size() }
+                : new int[] { -1, -1 };
     }
 
     /**
@@ -65,15 +67,14 @@ public class Board<T> {
      */
 
     public boolean isValidADMove(int oldPos, int newPos) {
-        int[] boardSize = new int[]{board.size(), board.get(0).size()};
-        return newPos <= boardSize[0]*boardSize[1] && newPos >= 1 &&
-            (
-                (newPos+boardSize[1]-1)/boardSize[1] == (oldPos+boardSize[1]-1)/boardSize[1] // Same row
-            );
+        int[] boardSize = new int[] { board.size(), board.get(0).size() };
+        return newPos <= boardSize[0] * boardSize[1] && newPos >= 1
+                && ((newPos + boardSize[1] - 1) / boardSize[1] == (oldPos + boardSize[1] - 1) / boardSize[1] // Same row
+                );
     }
 
     public int[] getSize() {
-        return new int[]{board.size(), board.get(0).size()};
+        return new int[] { board.size(), board.get(0).size() };
     }
 
     public int getOccupied() {
@@ -96,13 +97,17 @@ public class Board<T> {
         return board.get(position[0]).get(position[1]);
     }
 
+    public Cell<T> getCell(int x, int y) {
+        return board.get(x).get(y);
+    }
+
     public boolean isFull() {
-        return occupied == board.size()*board.get(0).size();
+        return occupied == board.size() * board.get(0).size();
     }
 
     public void reset() {
-        for (int i = 0 ; i < board.size() ; i++) {
-            for (int j = 0 ; j < board.get(i).size() ; j++) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.get(i).size(); j++) {
                 board.get(i).set(j, new Cell<T>());
             }
         }
@@ -115,56 +120,95 @@ public class Board<T> {
      * 
      * @param help Flag to print numeric position instead of mark
      */
-    @SuppressWarnings({"unused", "resource"})
+    @SuppressWarnings({ "unused", "resource" })
 
     public void print(boolean help) {
         System.out.print("\n\n");
 
-        for (int i = 0 ; i < board.size() ; i++) {
-            for (int j = 0 ; j < board.get(i).size() ; j++) {
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board.get(i).size(); j++) {
                 System.out.format("%1$s - %1$s - %1$s  ", board.get(i).get(j).getType());
             }
             System.out.println();
-            for (int j = 0 ; j < board.get(i).size() ; j++) {
+            for (int j = 0; j < board.get(i).size(); j++) {
                 System.out.format("| %1$5s |  ", board.get(i).get(j).getMark());
             }
             System.out.println();
-            for (int j = 0 ; j < board.get(i).size() ; j++) {
+            for (int j = 0; j < board.get(i).size(); j++) {
                 System.out.format("%1$s - %1$s - %1$s  ", board.get(i).get(j).getType());
             }
             System.out.println("\n");
         }
+        // for (int i = 0; i < board.size(); i++) {
+        // for (int j = 0; j < board.get(i).size(); j++) {
+        // System.out.format("%1$s - %1$s - %1$s ", board.get(i).get(j).getType());
+        // }
+        // System.out.println();
+        // for (int j = 0; j < board.get(i).size(); j++) {
+        // System.out.format("| %1$5s | ", board.get(i).get(j).getMark());
+        // }
+        // System.out.println();
+        // for (int j = 0; j < board.get(i).size(); j++) {
+        // System.out.format("%1$s - %1$s - %1$s ", board.get(i).get(j).getType());
+        // }
+        // System.out.println("\n");
+        // }
+
+        // for (int i = 0; i < board.size(); i++) {
+        // String seprator = "";
+        // String boardLine = "";
+        // for (int j = 0; j < board.get(i).size(); j++) {
+        // seprator += "+-----";
+        // }
+
+        // seprator += "+";
+        // System.out.println(seprator);
+
+        // for (int j = 0; j < board.get(i).size(); j++) {
+        // boardLine += "| ";
+        // boardLine += board.get(i).get(j).getMark();
+        // boardLine += " ";
+        // }
+        // boardLine += "|";
+        // System.out.println(boardLine);
+
+        // if (i == board.size() - 1) {
+        // System.out.println(seprator);
+        // }
+        // }
+        // System.out.println("");
 
         // int mark = 1;
 
         // for (int i = 0 ; i < board.size() ; i++) {
-        //     for (int b = 0 ; b < board.get(0).size() ; b++)
-        //         System.out.print("+----");
-        //     System.out.println("+");
-        //     for (int j = 0 ; j < board.get(i).size() ; j++) {
-        //         if (help) {
-        //             PrintStream dummy = (mark<10) ? System.out.printf("| %d  ", mark): System.out.printf("| %d ", mark);
-        //             mark++;
-        //         }
-        //         else {
-        //             try {
-        //                 if (board.get(i).get(j).isOccupied())
-        //                     System.out.printf("| %-3s", board.get(i).get(j).getMark().get());
-        //                 else
-        //                     System.out.printf("| %-3s", " ");
-        //             } catch (Exception e) {
-        //                 System.out.printf("| ?  ");
-        //             }
-        //         }
-        //         if (j == board.get(i).size()-1) {
-        //             System.out.println("|");
-        //         }
-        //     }
-        //     if (i == board.size()-1) {
-        //         for (int b = 0 ; b < board.get(0).size() ; b++)
-        //             System.out.print("+----");
-        //         System.out.println("+");
-        //     }
+        // for (int b = 0 ; b < board.get(0).size() ; b++)
+        // System.out.print("+----");
+        // System.out.println("+");
+        // for (int j = 0 ; j < board.get(i).size() ; j++) {
+        // if (help) {
+        // PrintStream dummy = (mark<10) ? System.out.printf("| %d ", mark):
+        // System.out.printf("| %d ", mark);
+        // mark++;
+        // }
+        // else {
+        // try {
+        // if (board.get(i).get(j).isOccupied())
+        // System.out.printf("| %-3s", board.get(i).get(j).getMark().get());
+        // else
+        // System.out.printf("| %-3s", " ");
+        // } catch (Exception e) {
+        // System.out.printf("| ? ");
+        // }
+        // }
+        // if (j == board.get(i).size()-1) {
+        // System.out.println("|");
+        // }
+        // }
+        // if (i == board.size()-1) {
+        // for (int b = 0 ; b < board.get(0).size() ; b++)
+        // System.out.print("+----");
+        // System.out.println("+");
+        // }
         // }
 
         System.out.println();
@@ -173,9 +217,9 @@ public class Board<T> {
     /**
      * Place an object with a mark into a cell
      * 
-     * @param t Object to place
+     * @param t    Object to place
      * @param mark Mark associated with the object
-     * @param pos Numeric position
+     * @param pos  Numeric position
      * @return Either place was succeed
      */
 
@@ -185,17 +229,15 @@ public class Board<T> {
         if (position[0] == -1 || position[1] == -1) {
             System.out.println("Invalid position");
             return false;
-        }
-        else if (!board.get(position[0]).get(position[1]).isOccupied()) {
+        } else if (!board.get(position[0]).get(position[1]).isOccupied()) {
             // This position is free
             board.get(position[0]).get(position[1]).set(t, mark);
             occupied++;
             return true;
-        }
-        else {
+        } else {
             // This position is occupied
             System.out.println("This position is not free");
             return false;
         }
     }
-  }      
+}
