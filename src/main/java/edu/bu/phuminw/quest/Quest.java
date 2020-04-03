@@ -84,33 +84,6 @@ public class Quest {
      */
 
     private void assignCell() {
-        // ArrayList<Integer> indexes = new ArrayList<Integer>();
-        // int[] size = board.getSize();
-
-        // for (int i = 1 ; i <= size[0]*size[1] ; i++)
-        // indexes.add(i);
-
-        // Collections.shuffle(indexes);
-
-        // int EXPECTED_MARKET = (int) (0.15*indexes.size());
-        // int market = 0;
-        // int EXPECTED_FORBID = (int) (0.1*indexes.size());
-        // int forbid = 0;
-
-        // for (Integer i: indexes) {
-        // if (market < EXPECTED_MARKET) {
-        // board.getCell(i).set(null, new Mark(MARKET));
-        // market++;
-        // }
-        // else if (forbid < EXPECTED_FORBID) {
-        // board.getCell(i).set(null, new Mark(FORBIDDEN));
-        // forbid++;
-        // }
-        // else {
-        // // Assigned market and forbidden, the rest is as default, so early return
-        // break;
-        // }
-        // }
         // TODO: INIT THE BOARD
         int[] boardSize = board.getSize();
         ArrayList<Integer> plainCell = new ArrayList<Integer>();
