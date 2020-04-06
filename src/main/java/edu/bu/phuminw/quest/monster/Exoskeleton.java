@@ -12,6 +12,6 @@ public class Exoskeleton extends Monster {
 
     @Override
     public String toString() {
-        return String.format("%s (Exoskeleton) Lv %d HP %.2f: damage %.2f defense %.2f dodge %.2f", getName(), getLevel(), getHp(), getDamage().getDamage().getFirst(), getDefense(), getDodge());
+        return String.format("%s (Exoskeleton) Lv %d HP %.2f: damage %.2f defense %.2f dodge %.2f", getName(), getLevel(), getHp(), makeAttack().getDamage().getFirst(), getDefense(), getDodge());
     }
 }

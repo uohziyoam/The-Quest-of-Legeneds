@@ -23,7 +23,7 @@ public class IceSpell extends Spell {
         this.rangeAmt = rangeAmt;
     }
 
-    public Damage getDamage() {
+    public Damage makeAttack() {
         return new Damage(getFinalBaseDamage(), RANGE, rangeAmt);
     }
 

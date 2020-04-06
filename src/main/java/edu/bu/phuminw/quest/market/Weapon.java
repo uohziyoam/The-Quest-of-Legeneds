@@ -30,7 +30,7 @@ public class Weapon extends Item implements Damagable {
         return damage;
     }
 
-    public Damage getDamage() {
+    public Damage makeAttack() {
         return new Damage((getOwner().getSkills().getStr()+damage)*0.05);
     }
 

@@ -17,6 +17,7 @@ import edu.bu.phuminw.quest.market.LightningSpell;
 import edu.bu.phuminw.quest.market.Potion;
 import edu.bu.phuminw.quest.market.Weapon;
 import edu.bu.phuminw.quest.util.Creature;
+import edu.bu.phuminw.quest.util.Damagable;
 import edu.bu.phuminw.quest.util.Damage;
 import edu.bu.phuminw.quest.util.Item;
 import edu.bu.phuminw.quest.util.ItemComparator;
@@ -28,10 +29,10 @@ import edu.bu.phuminw.quest.util.Tuple;
  * information about Hero
  */
 
-public abstract class Hero implements Creature {
-    private String name;
-    private int level;
-    private double hp;
+public abstract class Hero extends Creature implements Damagable {
+    // private String name;
+    // private int level;
+    // private double hp;
     private double mana;
     private HSkills skills;
     private double money;
@@ -46,11 +47,13 @@ public abstract class Hero implements Creature {
     private StdinWrapper sinwrap;
 
     public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor) {
+        super(name, 1, 100*1);
         if (name.length() == 0)
             throw new IllegalArgumentException("Illegal Arguments for Hero");
-        this.name = name;
-        level = 1;
-        hp = 100*level;
+
+        // this.name = name;
+        // level = 1;
+        // hp = 100*level;
         skills = new HSkills(str, dex, agi);
         this.mana = mana;
         this.favor = favor;
@@ -65,10 +68,6 @@ public abstract class Hero implements Creature {
         lightningSpell = null;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public HSkills getSkills() {
         return skills;
     }
@@ -77,16 +76,8 @@ public abstract class Hero implements Creature {
         return money;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
     public double getExp() {
         return exp;
-    }
-
-    public double getHp() {
-        return hp;
     }
 
     public double getMana() {
@@ -135,7 +126,7 @@ public abstract class Hero implements Creature {
      */
 
     public boolean levelUp() {
-        if (exp >= 10*level) {
+        if (exp >= 10*getLevel()) {
             // Increase stats
             skills.setStr(skills.getStr()*1.05);
             skills.setDex(skills.getDex()*1.05);
@@ -158,9 +149,9 @@ public abstract class Hero implements Creature {
 
             mana *= 1.1;
             mana = Math.round(mana*100)/100; // Round to 2 decimal points
-            hp = 100*level;
+            setHp(100*getLevel());
             exp = 0;
-            level++;
+            setLevel(getLevel()+1);
             return true;
         }
         return false;
@@ -177,7 +168,7 @@ public abstract class Hero implements Creature {
         boolean win = false;
 
         if (canDodge()) {
-            System.out.printf("[!] %s dodged ...\n", name);
+            System.out.printf("[!] %s dodged ...\n", getName());
             win = true;
         }
         else {
@@ -188,13 +179,13 @@ public abstract class Hero implements Creature {
             // Final damage to process
             double damage = (dmg.getDamage().getFirst() - defense > 0) ? dmg.getDamage().getFirst() - defense : 0;
                 
-            if (damage >= hp) {
-                win = false; hp = 0;
-                System.out.printf("[!] %s was attacked %.2f and died\n", name, damage);
+            if (damage >= getHp()) {
+                win = false; setHp(0);
+                System.out.printf("[!] %s was attacked %.2f and died\n", getName(), damage);
             }
             else {
-                win = true; hp -= damage;
-                System.out.printf("[!] %s was attacked %.2f\n", name, damage);
+                win = true; setHp(getHp() - damage);
+                System.out.printf("[!] %s was attacked %.2f\n", getName(), damage);
             }
         }
 
@@ -208,7 +199,7 @@ public abstract class Hero implements Creature {
     public void winMatch(int monLv) {
         money += 100*monLv;
         exp += 2;
-        hp *= 1.05;
+        setHp(getHp() * 1.05);
         mana += (mana == 0) ? 100 : 0.05*mana; // Increase by 5% or 100 if empty
         mana = Math.round(mana*100)/100; // Round to 2 decimal points
 
@@ -220,7 +211,7 @@ public abstract class Hero implements Creature {
      */
 
     public void lostMatch() {
-        hp = 100*level/2;
+        setHp(100*getLevel()/2);
     }
 
     // /**
@@ -299,7 +290,7 @@ public abstract class Hero implements Creature {
                 if (1 <= token && token <= inventory.size()) {
                     Item toEquip = inventory.get(token-1);
 
-                    if (toEquip.getMinLevel() <= level) { // Check min level requirement
+                    if (toEquip.getMinLevel() <= getLevel()) { // Check min level requirement
                         if (toEquip instanceof Armor) {
                             armor = (Armor) toEquip;
                             System.out.printf("Equipped %s\n", armor.getName());
@@ -317,9 +308,9 @@ public abstract class Hero implements Creature {
                                 case HSkills.STR: skills.setStr(skills.getStr() + pinfo.getSecond());break;
                                 case HSkills.DEX: skills.setDex(skills.getDex() + pinfo.getSecond());break;
                                 case HSkills.AGI: skills.setAgi(skills.getAgi() + pinfo.getSecond());break;
-                                case "HP": hp += pinfo.getSecond();break;
+                                case "HP": setHp(getHp() + pinfo.getSecond());break;
                                 case "MANA": mana += pinfo.getSecond();break;
-                                case "ALL": hp += pinfo.getSecond();mana += pinfo.getSecond();skills.setStr(skills.getStr() + pinfo.getSecond());skills.setDex(skills.getDex() + pinfo.getSecond());skills.setAgi(skills.getAgi() + pinfo.getSecond());break;
+                                case "ALL": setHp(getHp() + pinfo.getSecond());mana += pinfo.getSecond();skills.setStr(skills.getStr() + pinfo.getSecond());skills.setDex(skills.getDex() + pinfo.getSecond());skills.setAgi(skills.getAgi() + pinfo.getSecond());break;
                                 default: System.out.println("Potion contains invalid skill");
                             }
 
@@ -344,7 +335,7 @@ public abstract class Hero implements Creature {
                 
                     }
                     else {
-                        System.out.printf("Current level does not satisfy the minimum level requirement (%d<%d)\n", level, toEquip.getMinLevel());
+                        System.out.printf("Current level does not satisfy the minimum level requirement (%d<%d)\n", getLevel(), toEquip.getMinLevel());
                     }
                 }
                 else {
@@ -385,18 +376,18 @@ public abstract class Hero implements Creature {
                     case "HAND": return new Damage(skills.getStr()*0.05);
                     case "WEAPON": 
                         if (weapon == null) {System.out.println("[!] No weapon equipped\n");break;}
-                        return weapon.getDamage();
+                        return weapon.makeAttack();
                     case "FIRE SPELL": 
                         if (fireSpell == null) {System.out.println("[!] No fire spell\n");break;}
-                        else if (fireSpell.getManaReq() <= mana) {mana -= fireSpell.getManaReq();return fireSpell.getDamage();}
+                        else if (fireSpell.getManaReq() <= mana) {mana -= fireSpell.getManaReq();return fireSpell.makeAttack();}
                         else {System.out.println("[!] Not enough mana for fire spell\n");break;} 
                     case "ICE SPELL": 
                         if (iceSpell == null) {System.out.println("[!] No ice spell\n");break;}
-                        else if (iceSpell.getManaReq() <= mana) {mana -= iceSpell.getManaReq();return iceSpell.getDamage();}
+                        else if (iceSpell.getManaReq() <= mana) {mana -= iceSpell.getManaReq();return iceSpell.makeAttack();}
                         else {System.out.println("[!] Not enough mana for ice spell\n");break;} 
                     case "LIGHTNING SPELL": 
                         if (lightningSpell == null) {System.out.println("[!] No lightning spell\n");break;}
-                        else if (lightningSpell.getManaReq() <= mana) {mana -= lightningSpell.getManaReq();return lightningSpell.getDamage();}
+                        else if (lightningSpell.getManaReq() <= mana) {mana -= lightningSpell.getManaReq();return lightningSpell.makeAttack();}
                         else {System.out.println("[!] Not enough mana for lightning spell\n");break;} 
                     default: System.out.println("[!] Invalid attack method\n");
                 }
@@ -476,7 +467,7 @@ public abstract class Hero implements Creature {
         String headFormat = "+%-4s+%-20s+%-15s+%-10s+%-60s+\n";
         String hline = String.format(headFormat, (new String(new char[4])).replace("\0", "-"), (new String(new char[20])).replace("\0", "-"), (new String(new char[15])).replace("\0", "-"), (new String(new char[10])).replace("\0", "-"), (new String(new char[60])).replace("\0", "-"));
 
-        System.out.printf("*** Inventory of %s ***\n", name);
+        System.out.printf("*** Inventory of %s ***\n", getName());
         System.out.print(hline);
         System.out.format(format, "#", "Name", "Type", "MinLevel", "Additional Information");
         System.out.print(hline);
@@ -534,9 +525,9 @@ public abstract class Hero implements Creature {
             return false;
 
         Hero otherH = (Hero) other;
-        if (name == null || skills == null || favor == null)
+        if (getName() == null || skills == null || favor == null)
             return false;
 
-        return name.equals(otherH.getName()) && level == otherH.getLevel() && hp == otherH.getHp() && mana == otherH.getMana() && skills.equals(otherH.getSkills()) && money == otherH.getMoney() && exp == otherH.getExp() && favor.equals(otherH.getFavor());
+        return getName().equals(otherH.getName()) && getLevel() == otherH.getLevel() && getHp() == otherH.getHp() && mana == otherH.getMana() && skills.equals(otherH.getSkills()) && money == otherH.getMoney() && exp == otherH.getExp() && favor.equals(otherH.getFavor());
     }
 }

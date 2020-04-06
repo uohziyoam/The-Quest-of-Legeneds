@@ -688,7 +688,7 @@ public class Quest {
 
                                 if (!died.contains(hToFight)) {
                                     Damage heroDamage = hToFight.makeAttack();
-                                    Damage monDamage = mToFight.getDamage();
+                                    Damage monDamage = mToFight.makeAttack();
 
                                     if (!mToFight.attack(heroDamage)) {
                                         // remove monster from list

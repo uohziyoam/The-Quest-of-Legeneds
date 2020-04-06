@@ -23,7 +23,7 @@ public class FireSpell extends Spell {
         this.defenseAmt = defenseAmt;
     }
 
-    public Damage getDamage() {
+    public Damage makeAttack() {
         return new Damage(getFinalBaseDamage(), DEFENSE, defenseAmt);
     }
 

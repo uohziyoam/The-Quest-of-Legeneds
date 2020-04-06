@@ -24,7 +24,7 @@ public class LightningSpell extends Spell {
         this.dodgeAmt = dodgeAmt;
     }
 
-    public Damage getDamage() {
+    public Damage makeAttack() {
         return new Damage(getFinalBaseDamage(), RANGE, dodgeAmt);
     }
 
