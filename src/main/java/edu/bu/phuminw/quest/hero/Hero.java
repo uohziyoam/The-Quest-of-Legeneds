@@ -46,8 +46,16 @@ public abstract class Hero extends Creature implements Damagable {
     private LightningSpell lightningSpell;
     private StdinWrapper sinwrap;
 
+<<<<<<< HEAD
+    //NEW
+    private Coordinate curPosition;
+    //NEW
+
+    public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor,Coordinate curPosition) {
+=======
     public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor) {
         super(name, 1, 100*1);
+>>>>>>> f52424296501809abbe338445ae275eee91785b2
         if (name.length() == 0)
             throw new IllegalArgumentException("Illegal Arguments for Hero");
 
@@ -66,6 +74,10 @@ public abstract class Hero extends Creature implements Damagable {
         fireSpell = null;
         iceSpell = null;
         lightningSpell = null;
+
+        //NEW
+        this.curPosition = curPosition;
+        //NEW
     }
 
     public HSkills getSkills() {
@@ -107,6 +119,19 @@ public abstract class Hero extends Creature implements Damagable {
     public Tuple<String, String> getFavor() {
         return favor;
     }
+
+    //NEW
+
+    public Coordinate getCurrentPosition(){
+        return curPosition;
+    }
+    
+
+    
+    public void setCurrentPosition(Coordinate newPosition){
+        this.curPosition = newPosition;
+    }
+    //NEW
 
     /**
      * Decide whether can dodge the incoming attack
