@@ -9,5 +9,5 @@ package edu.bu.phuminw.quest.util;
  */
 
 public interface Damagable {
-    public Damage getDamage();
+    public Damage makeAttack();
 }
