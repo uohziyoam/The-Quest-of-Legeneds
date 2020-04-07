@@ -97,6 +97,7 @@ public class HSkills {
      * @param skill Skill having bonus
      * @param factor bonus factor e.g. 1.1 is 10 %
      */
+
     public void addBonus(String skill, double factor) {
         bonus.add(new Tuple<String,Double>(skill, factor));
     }
@@ -108,6 +109,7 @@ public class HSkills {
      * @param factor bonus factor
      * @return {@code true} if some elements were removed
      */
+    
     public boolean removeBonus(String skill, double factor) {
         return bonus.removeIf(new Predicate<Tuple<String, Double>>() {
             @Override

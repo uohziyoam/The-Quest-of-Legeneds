@@ -120,7 +120,7 @@ public class Board<T> {
      * 
      * @param help Flag to print numeric position instead of mark
      */
-    @SuppressWarnings({ "unused", "resource" })
+    // @SuppressWarnings({ "unused", "resource" })
 
     public void print(boolean help) {
         System.out.print("\n\n");
