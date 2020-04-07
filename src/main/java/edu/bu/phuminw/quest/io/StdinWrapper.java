@@ -22,6 +22,7 @@ public class StdinWrapper {
     private static final Character END = 'e';
     private static final Character QUIT = 'q';
     private static final Character INFO = 'i';
+    private static final Character TELEPORT = 't';
 
     public StdinWrapper(String message) {
         if (message == null)
@@ -84,6 +85,13 @@ public class StdinWrapper {
             token = null;
             return;
         }
+        else if (token != null && ((token.length()==1 && Character.toLowerCase(token.charAt(0)) == 't') || token.toLowerCase().equals("teleport")))
+        {
+            special = true;
+            specialChar = TELEPORT;
+            token = null;
+            return;
+        }
 
         special = false;
         specialChar = null;
@@ -99,6 +107,10 @@ public class StdinWrapper {
 
     public boolean isInfo() {
         return (special && specialChar.equals(INFO)) ? true : false;
+    }
+
+    public boolean isTeleport() {
+        return (special && specialChar.equals(TELEPORT)) ? true : false;
     }
 
     public String next() {
