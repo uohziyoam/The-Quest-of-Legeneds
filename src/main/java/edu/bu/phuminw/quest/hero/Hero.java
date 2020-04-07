@@ -116,7 +116,26 @@ public abstract class Hero extends Creature implements Damagable {
     }
     
     public void setPosition(Cell<Object> newPosition){
+        if (newPosition == null)
+            throw new IllegalArgumentException("Null position cannot be accepted");
+
+        // Remove bonus of old cell, if any
+        switch (position.getType()) {
+            case Quest.BUSH: skills.removeBonus(HSkills.DEX, 1.1);break;
+            case Quest.CAVE: skills.removeBonus(HSkills.AGI, 1.1);break;
+            case Quest.KOULOU: skills.removeBonus(HSkills.STR, 1.1);break;
+            default: ;
+        }
+
         position = newPosition;
+
+        // Add bonus of new cell, if any
+        switch (position.getType()) {
+            case Quest.BUSH: skills.addBonus(HSkills.DEX, 1.1);break;
+            case Quest.CAVE: skills.addBonus(HSkills.AGI, 1.1);break;
+            case Quest.KOULOU: skills.addBonus(HSkills.STR, 1.1);break;
+            default: ;
+        }
     }
 
     /**

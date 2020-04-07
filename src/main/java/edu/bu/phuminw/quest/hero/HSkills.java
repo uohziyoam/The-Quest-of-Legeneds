@@ -4,6 +4,11 @@
 
 package edu.bu.phuminw.quest.hero;
 
+import java.util.ArrayList;
+import java.util.function.Predicate;
+
+import edu.bu.phuminw.quest.util.Tuple;
+
 /**
  * A class to serve as a hero skills set
  */
@@ -15,6 +20,7 @@ public class HSkills {
     public static final String STR = "STR";
     public static final String DEX = "DEX";
     public static final String AGI = "AGI";
+    private ArrayList<Tuple<String, Double>> bonus;
 
     public HSkills(double strength, double dexterity, double agility) {
         if (strength < 0 || dexterity < 0 || agility < 0)
@@ -22,18 +28,43 @@ public class HSkills {
         this.strength = strength;
         this.dexterity = dexterity;
         this.agility = agility;
+        bonus = new ArrayList<Tuple<String, Double>>();
     }
 
     public double getStr() {
-        return strength;
+        int factor = 1;
+
+        // Apply temporary bonus, if any
+        for (Tuple<String, Double> b: bonus) {
+            if (b.getFirst() == STR)
+                factor *= b.getSecond();
+        }
+
+        return strength * factor;
     }
 
     public double getDex() {
-        return dexterity;
+        int factor = 1;
+        
+        // Apply temporary bonus, if any
+        for (Tuple<String, Double> b: bonus) {
+            if (b.getFirst() == DEX)
+                factor *= b.getSecond();
+        }
+
+        return dexterity * factor;
     }
 
     public double getAgi() {
-        return agility;
+        int factor = 1;
+
+        // Apply temporary bonus, if any
+        for (Tuple<String, Double> b: bonus) {
+            if (b.getFirst() == AGI)
+                factor *= b.getSecond();
+        }
+
+        return agility * factor;
     }
 
     public boolean setStr(double newStr) {
@@ -58,6 +89,32 @@ public class HSkills {
 
         agility = newAgi;
         return true;
+    }
+
+    /**
+     * Add temporary bonus to some skills
+     * 
+     * @param skill Skill having bonus
+     * @param factor bonus factor e.g. 1.1 is 10 %
+     */
+    public void addBonus(String skill, double factor) {
+        bonus.add(new Tuple<String,Double>(skill, factor));
+    }
+
+    /**
+     * Remove all occurrences matching given skill and factor
+     * 
+     * @param skill skill name
+     * @param factor bonus factor
+     * @return {@code true} if some elements were removed
+     */
+    public boolean removeBonus(String skill, double factor) {
+        return bonus.removeIf(new Predicate<Tuple<String, Double>>() {
+            @Override
+            public boolean test(Tuple<String, Double> t) {
+                return t.getFirst().equals(skill) && t.getSecond() == factor;
+            }
+        });
     }
 
     /**
