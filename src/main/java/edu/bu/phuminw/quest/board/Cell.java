@@ -23,6 +23,7 @@ public class Cell<T> {
         } else {
             occupier = occ;
             mark = m;
+            type = null;
         }
     }
 
@@ -33,6 +34,7 @@ public class Cell<T> {
     public void clear() {
         occupier = null;
         mark = new Mark("");
+        type = null;
     }
 
     public boolean set(T occ, Mark m) {
