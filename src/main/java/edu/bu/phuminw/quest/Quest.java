@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
@@ -34,11 +33,11 @@ import edu.bu.phuminw.quest.util.Damage;
 import edu.bu.phuminw.quest.util.Team;
 
 public class Quest {
-    private int MAXHERO = 3;
-    public static final String BUSH = "B";
+    private final int MAXHERO = 3;
     public static final String HERO_NEXUS = "N";
     public static final String MONSTER_NEXUS = "N";
     public static final String PLAIN = "P";
+    public static final String BUSH = "B";
     public static final String CAVE = "C";
     public static final String KOULOU = "K";
     public static final String FORBIDDEN = "X";
@@ -84,9 +83,10 @@ public class Quest {
      */
 
     private void assignCell() {
-        // TODO: INIT THE BOARD
         int[] boardSize = board.getSize();
+
         ArrayList<Integer> plainCell = new ArrayList<Integer>();
+
         for (int i = 1; i <= boardSize[0] * boardSize[1]; i++)
             plainCell.add(i);
 
@@ -117,37 +117,45 @@ public class Quest {
             plainCell.remove(Integer.valueOf((j - 1) * boardSize[1] + 6));
         }
 
-        // Assign BUSH
-        board.getCell(15).setType(BUSH);
-        plainCell.remove(Integer.valueOf(15));
-        board.getCell(16).setType(BUSH);
-        plainCell.remove(Integer.valueOf(16));
-        board.getCell(26).setType(BUSH);
-        plainCell.remove(Integer.valueOf(26));
-        board.getCell(28).setType(BUSH);
-        plainCell.remove(Integer.valueOf(28));
-        board.getCell(36).setType(BUSH);
-        plainCell.remove(Integer.valueOf(36));
-        board.getCell(40).setType(BUSH);
-        plainCell.remove(Integer.valueOf(40));
+        // 5% of each special cell
+        int expectedBush = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
+        int expectedCave = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
+        int expectedKoulou = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
 
-        // Assign CAVE
-        board.getCell(12).setType(CAVE);
-        plainCell.remove(Integer.valueOf(12));
-        board.getCell(25).setType(CAVE);
-        plainCell.remove(Integer.valueOf(25));
+        int potentialPos; // Share temp variable among loops
 
-        // Assign KOULOU
-        board.getCell(29).setType(KOULOU);
-        plainCell.remove(Integer.valueOf(29));
-        board.getCell(31).setType(KOULOU);
-        plainCell.remove(Integer.valueOf(31));
-        board.getCell(41).setType(KOULOU);
-        plainCell.remove(Integer.valueOf(41));
-        board.getCell(42).setType(KOULOU);
-        plainCell.remove(Integer.valueOf(42));
-        board.getCell(44).setType(KOULOU);
-        plainCell.remove(Integer.valueOf(44));
+        while (expectedBush > 0) {
+            do {
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
+
+            board.getCell(potentialPos).setType(BUSH);
+            plainCell.remove(Integer.valueOf(potentialPos));
+            expectedBush--;
+        }
+
+        while (expectedCave > 0) {
+            do {
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
+
+            board.getCell(potentialPos).setType(CAVE);
+            plainCell.remove(Integer.valueOf(potentialPos));
+            expectedCave--;
+        }
+
+        while (expectedKoulou > 0) {
+            do {
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
+
+            board.getCell(potentialPos).setType(KOULOU);
+            plainCell.remove(Integer.valueOf(potentialPos));
+            expectedKoulou--;
+        }
 
         // Assign the rest as plain cell
         for (Integer pos: plainCell)
@@ -510,11 +518,16 @@ public class Quest {
         }
         player = new Player(rand.nextInt(), token, MAXHERO);
         System.out.printf("Welcome %s!\n\n", player.getName());
+
+        // TODO: CHange to H1, H2, H3 instead of asking for a mark
         sinwrap.setMessage("Want mark do you wanna use? ");
-        // while ((token = sinwrap.next()) == null || token.toUpperCase().equals(MARKET)
-        //         || token.toUpperCase().equals(FORBIDDEN) || token.length() != 1) {
-        //     System.out.println("Unacceptable mark\n");
-        // }
+        while ((token = sinwrap.next()) == null 
+            // || token.toUpperCase().equals(MARKET)
+            // || token.toUpperCase().equals(FORBIDDEN) 
+            // || token.length() != 1
+            ) {
+            System.out.println("Unacceptable mark\n");
+        }
         player.getMark().set(token.toUpperCase() + "^");
 
         selectHero();
