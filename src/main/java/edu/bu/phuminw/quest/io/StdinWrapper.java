@@ -23,6 +23,7 @@ public class StdinWrapper {
     private static final Character QUIT = 'q';
     private static final Character INFO = 'i';
     private static final Character TELEPORT = 't';
+    private static final Character BACKNEXUS = 'b';
 
     public StdinWrapper(String message) {
         if (message == null)
@@ -92,6 +93,13 @@ public class StdinWrapper {
             token = null;
             return;
         }
+        else if (token != null && ((token.length()==1 && Character.toLowerCase(token.charAt(0)) == 'b') || token.toLowerCase().equals("back")))
+        {
+            special = true;
+            specialChar = BACKNEXUS;
+            token = null;
+            return;
+        }
 
         special = false;
         specialChar = null;
@@ -111,6 +119,10 @@ public class StdinWrapper {
 
     public boolean isTeleport() {
         return (special && specialChar.equals(TELEPORT)) ? true : false;
+    }
+
+    public boolean isBackNexus() {
+        return (special && specialChar.equals(BACKNEXUS)) ? true : false;
     }
 
     public String next() {
