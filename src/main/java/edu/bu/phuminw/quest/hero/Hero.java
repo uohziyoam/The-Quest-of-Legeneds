@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import edu.bu.phuminw.quest.Quest;
+import edu.bu.phuminw.quest.board.Cell;
 import edu.bu.phuminw.quest.io.StdinWrapper;
 import edu.bu.phuminw.quest.market.Armor;
 import edu.bu.phuminw.quest.market.FireSpell;
@@ -45,17 +46,10 @@ public abstract class Hero extends Creature implements Damagable {
     private IceSpell iceSpell;
     private LightningSpell lightningSpell;
     private StdinWrapper sinwrap;
+    private Cell<Object> position;
 
-<<<<<<< HEAD
-    //NEW
-    private Coordinate curPosition;
-    //NEW
-
-    public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor,Coordinate curPosition) {
-=======
     public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor) {
-        super(name, 1, 100*1);
->>>>>>> f52424296501809abbe338445ae275eee91785b2
+        super(name, 1, 100);
         if (name.length() == 0)
             throw new IllegalArgumentException("Illegal Arguments for Hero");
 
@@ -74,10 +68,7 @@ public abstract class Hero extends Creature implements Damagable {
         fireSpell = null;
         iceSpell = null;
         lightningSpell = null;
-
-        //NEW
-        this.curPosition = curPosition;
-        //NEW
+        position = null;
     }
 
     public HSkills getSkills() {
@@ -120,18 +111,13 @@ public abstract class Hero extends Creature implements Damagable {
         return favor;
     }
 
-    //NEW
-
-    public Coordinate getCurrentPosition(){
-        return curPosition;
+    public Cell<Object> getPosition(){
+        return position;
     }
     
-
-    
-    public void setCurrentPosition(Coordinate newPosition){
-        this.curPosition = newPosition;
+    public void setPosition(Cell<Object> newPosition){
+        position = newPosition;
     }
-    //NEW
 
     /**
      * Decide whether can dodge the incoming attack

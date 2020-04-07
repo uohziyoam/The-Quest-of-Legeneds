@@ -6,6 +6,7 @@ package edu.bu.phuminw.quest.monster;
 
 import java.util.Random;
 
+import edu.bu.phuminw.quest.board.Cell;
 import edu.bu.phuminw.quest.board.Mark;
 import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damagable;
@@ -24,21 +25,11 @@ public abstract class Monster extends Creature implements Damagable {
     private double baseDamage;
     private double defense;
     private double dodge;
+    private Cell<Object> position;
 
-<<<<<<< HEAD
-    //NEW
-    private Coordinate curPosition;
-    //NEW
-
-
-
-    public Monster(String name, int level, double baseDamage, double defense, double dodge, Coordinate curPosition) {
-        if (name.length() == 0 || hp < 0 || level <= 0 || baseDamage < 0 || defense < 0 || dodge < 0 || dodge > 1)
-=======
     public Monster(String name, int level, double baseDamage, double defense, double dodge) {
         super(name, level, 100*level);
         if (name.length() == 0 || level <= 0 || baseDamage < 0 || defense < 0 || dodge < 0 || dodge > 1)
->>>>>>> f52424296501809abbe338445ae275eee91785b2
             throw new IllegalArgumentException("Illegal Arguments for Monster");
         // this.name = name;
         // hp = 100*level;
@@ -46,10 +37,7 @@ public abstract class Monster extends Creature implements Damagable {
         this.baseDamage = baseDamage;
         this.defense = defense;
         this.dodge = dodge;
-
-        //NEW
-        this.curPosition = curPosition;
-        //NEW
+        position = null;
     }
 
     public Mark getMark() {
@@ -77,22 +65,19 @@ public abstract class Monster extends Creature implements Damagable {
     public double getDodge() {
         return dodge;
     }
-    
 
-    //NEW
-
-    public Coordinate getCurrentPosition(){
-        return curPosition;
+    public Cell<Object> getPosition(){
+        return position;
     }
 
-    public void moveAhead(){
-        //if no hero around, then move ahead;
-        Coordinate newPosition = new Coordinate(curPosition.getX()+1,curPosition.getY());
-        setCurrentPosition(newPosition);
-    }
+    // public void moveAhead(){
+    //     //if no hero around, then move ahead;
+    //     Cell<Object> newPosition = new Cell<Object>(curPosition.getX()+1,curPosition.getY());
+    //     setCurrentPosition(newPosition);
+    // }
 
-    public void setCurrentPosition(Coordinate newPosition){
-        this.curPosition = newPosition;
+    public void settPosition(Cell<Object> newPosition){
+        this.position = newPosition;
     }
     //NEW
 
