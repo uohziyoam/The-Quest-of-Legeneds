@@ -45,4 +45,9 @@ public class Tuple<T, U> {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%s, %s)", t, u);
+    }
 }
