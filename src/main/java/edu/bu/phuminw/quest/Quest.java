@@ -13,6 +13,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.function.Predicate;
 
@@ -29,8 +31,10 @@ import edu.bu.phuminw.quest.monster.Exoskeleton;
 import edu.bu.phuminw.quest.monster.Monster;
 import edu.bu.phuminw.quest.monster.Spirit;
 import edu.bu.phuminw.quest.player.Player;
+import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damage;
 import edu.bu.phuminw.quest.util.Team;
+import edu.bu.phuminw.quest.util.Tuple;
 
 public class Quest {
     private final int MAXHERO = 3;
@@ -451,19 +455,25 @@ public class Quest {
                         // Deep copy of a Hero
                         switch (toAdd.getClass().getSimpleName().toUpperCase()) {
                             case "PALADIN":
-                                player.addHero(new Paladin(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
+                                Paladin pal = new Paladin(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
                                         toAdd.getSkills().getDex(), toAdd.getSkills().getAgi(), toAdd.getMoney(),
-                                        toAdd.getExp()));
+                                        toAdd.getExp());
+                                pal.setMark(new Mark("H" + (player.getNumHero()+1)));
+                                player.addHero(pal);
                                 break;
                             case "SORCERER":
-                                player.addHero(new Sorcerer(toAdd.getName(), toAdd.getMana(),
+                                Sorcerer sor = new Sorcerer(toAdd.getName(), toAdd.getMana(),
                                         toAdd.getSkills().getStr(), toAdd.getSkills().getDex(),
-                                        toAdd.getSkills().getAgi(), toAdd.getMoney(), toAdd.getExp()));
+                                        toAdd.getSkills().getAgi(), toAdd.getMoney(), toAdd.getExp());
+                                sor.setMark(new Mark("H" + (player.getNumHero()+1)));
+                                player.addHero(sor);
                                 break;
                             case "WARRIOR":
-                                player.addHero(new Warrior(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
+                                Warrior war = new Warrior(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
                                         toAdd.getSkills().getDex(), toAdd.getSkills().getAgi(), toAdd.getMoney(),
-                                        toAdd.getExp()));
+                                        toAdd.getExp());
+                                war.setMark(new Mark("H" + (player.getNumHero()+1)));
+                                player.addHero(war);
                                 break;
                             default:
                                 System.out.printf("Undefined hero type %s\n", toAdd.getClass().getSimpleName());
@@ -502,6 +512,129 @@ public class Quest {
     }
 
     /**
+     * Randomly assign Creatures to given row. One per lane.
+     * 
+     * @param <T> Creature object
+     * @param row Row to assign Creatures
+     * @param toPlace Creatures to place
+     */
+
+    private <T extends Creature> void randomAssignPerLane(int row, List<T> toPlace) {
+        int[] boardSize = board.getSize();
+
+        // Map of each lane
+        ArrayList<Tuple<Integer, Integer>> rowMap = new ArrayList<Tuple<Integer, Integer>>();
+        for (int i = ((row-1) * boardSize[1]) + 1 ; i <= boardSize[1]*row ;) {
+            int forbidInd = i+1;
+            
+            while (forbidInd <= boardSize[1]*row && !board.getCell(forbidInd).getType().equals(FORBIDDEN)) {
+                forbidInd++;
+            }
+
+            rowMap.add(new Tuple<Integer,Integer>(i, forbidInd));
+            i = forbidInd+1;
+        }
+
+        ListIterator<Tuple<Integer, Integer>> iter = rowMap.listIterator();
+
+        // Place one by one from toPlace
+        for (T t: toPlace) {
+            System.out.printf("Assigning %s\n", t.getName());
+            boolean assigned = false;
+
+            while (!assigned) {
+                Tuple<Integer, Integer> laneBound = iter.next();
+                ArrayList<Integer> lane = new ArrayList<Integer>();
+
+                // Space in the lane
+                for (Integer i = laneBound.getFirst() ; i < laneBound.getSecond() ; i++)
+                    lane.add(i);
+
+                // Shuffle for randomness
+                Collections.shuffle(lane);
+
+                for (Integer position: lane) {
+                    if (board.getCell(position).getType().equals(HERO_NEXUS) && board.getCell(position).getOccipier() == null) {
+                        board.getCell(position).set(t, t.getMark());
+                        assigned = true;
+                        break;
+                    }
+                }
+
+                // No lane left but have unassigned Creature(s)
+                if (!assigned && !iter.hasNext()) {
+                    System.err.println("No place to assign");
+                    System.exit(-1);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Create monsters of the requested size and based on max hero level
+     * 
+     * @param monSize Number of Monster to create
+     * @return A list of Monsters
+     */
+
+    private ArrayList<? extends Monster> spawnMonster(int monSize) {
+        Team<Hero> pHeroes = player.getHeroTeam();
+        ArrayList<Integer> hLv = new ArrayList<Integer>();
+        for (Hero h : pHeroes)
+            hLv.add(h.getLevel());
+
+        // Choose monster level
+        int maxLv = Collections.max(hLv); // Max of heroes level
+        int maxMonLv = Collections.max(monster.keySet()); // Max of mon level
+        int monLv = -1;
+        if (maxLv > maxMonLv)
+            monLv = maxMonLv;
+        else {
+            monLv = maxLv;
+
+            // In case no monster with same level as heroes max level
+            while (!monster.containsKey(monLv) && monLv > 1) {
+                monLv--;
+            }
+        }
+
+        // Prepare monsters for fight
+        ArrayList<Monster> monTeam = new ArrayList<Monster>();
+        ArrayList<Monster> targetMonster = monster.get(monLv);
+
+        for (int i = 0; i < monSize; i++) {
+            Collections.shuffle(targetMonster);
+            Monster toAdd = targetMonster.get(0);
+
+            // Deep copy of an Item
+            switch (toAdd.getClass().getSimpleName().toUpperCase()) {
+                case "DRAGON":
+                    Dragon d = new Dragon(toAdd.getName(), toAdd.getLevel(),
+                            toAdd.getBaseDamage() / 1.05, toAdd.getDefense(), toAdd.getDodge());
+                    d.setMark(new Mark(d.getName().substring(0, 2).toUpperCase()));
+                    monTeam.add(d);
+                    break;
+                case "EXOSKELETON":
+                    Exoskeleton e = new Exoskeleton(toAdd.getName(), toAdd.getLevel(),
+                            toAdd.getBaseDamage(), toAdd.getDefense() / 1.05, toAdd.getDodge());
+                    e.setMark(new Mark(e.getName().substring(0, 2).toUpperCase()));
+                    monTeam.add(e);
+                    break;
+                case "SPIRIT":
+                    Spirit s = new Spirit(toAdd.getName(), toAdd.getLevel(), toAdd.getBaseDamage(),
+                            toAdd.getDefense(), toAdd.getDodge() / 1.05);
+                    s.setMark(new Mark(s.getName().substring(0, 2).toUpperCase()));
+                    monTeam.add(s);
+                    break;
+                default:
+                    System.out.printf("Undefined monster %s\n", toAdd.getClass().getSimpleName());
+            }
+        }
+
+        return monTeam;
+    }
+
+    /**
      * Core method contains game logic
      * 
      * @throws ClassNotFoundException
@@ -510,25 +643,12 @@ public class Quest {
 
     public void play() throws ClassNotFoundException, IOException {
         // Create player for Quest
-        board.print(false);
-        System.exit(0);
         sinwrap.setMessage("Please enter your name: ");
         String token;
         while ((token = sinwrap.next()) == null) {
         }
         player = new Player(rand.nextInt(), token, MAXHERO);
         System.out.printf("Welcome %s!\n\n", player.getName());
-
-        // TODO: CHange to H1, H2, H3 instead of asking for a mark
-        sinwrap.setMessage("Want mark do you wanna use? ");
-        while ((token = sinwrap.next()) == null 
-            // || token.toUpperCase().equals(MARKET)
-            // || token.toUpperCase().equals(FORBIDDEN) 
-            // || token.length() != 1
-            ) {
-            System.out.println("Unacceptable mark\n");
-        }
-        player.getMark().set(token.toUpperCase() + "^");
 
         selectHero();
 
@@ -537,8 +657,17 @@ public class Quest {
 
             // Assign starting point
             int[] size = board.getSize();
+            List<Hero> playerHeroes = player.getHeroTeam().getRandomMembers();
+
+            // Assign heroes to the last row
+            randomAssignPerLane(size[0], playerHeroes);
+            // Assign monsters to the first row
+            randomAssignPerLane(1, spawnMonster(playerHeroes.size()));
+
+            board.print(false);
+            System.exit(0);
+
             int currentPos = rand.nextInt(size[0] * size[1]) + 1;
-            board.getCell(currentPos).set(player, player.getMark());
 
             boolean end = false;
 
@@ -668,9 +797,7 @@ public class Quest {
                                                 (mToFight == m) ? "-->" : (new String(new char[4])).replace("\0", ""),
                                                 m);
                                     System.out.println();
-                                } while ((hToFight = player.getHero()) == null || hToFight.getHp() <= 0); // Ask for
-                                                                                                          // hero to
-                                                                                                          // fight
+                                } while ((hToFight = player.getHero()) == null || hToFight.getHp() <= 0); // Ask for hero to fight
 
                                 if (!died.contains(hToFight)) {
                                     Damage heroDamage = hToFight.makeAttack();
