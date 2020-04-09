@@ -4,7 +4,7 @@
 
 package edu.bu.phuminw.quest.player;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import edu.bu.phuminw.quest.Quest;
@@ -90,7 +90,7 @@ public class Player {
      */
 
     public Hero getHero() { 
-        ArrayList<Hero> heroMembers = heroes.getMember();
+        List<Hero> heroMembers = heroes.getMember();
         sinwrap.setMessage("Which hero (select by #, e to end, q to quit)? ");
 
         while (true) {
