@@ -4,6 +4,8 @@
 
 package edu.bu.phuminw.quest.util;
 
+import edu.bu.phuminw.quest.board.Mark;
+
 /**
  * Guideline that Creature object needs to have
  */
@@ -12,11 +14,13 @@ public abstract class Creature {
    private String name;
    private int level;
    private double hp;
+   private Mark mark;
 
    public Creature(String name, int level, double hp) {
       this.name = name;
       this.level = level;
       this.hp = hp;
+      this.mark = null;
    }
 
    public String getName() {
@@ -31,6 +35,10 @@ public abstract class Creature {
       return hp;
    }
 
+   public Mark getMark() {
+      return mark;
+   }
+
    public void setHp(double hp) {
       this.hp = hp;
    }
@@ -39,11 +47,16 @@ public abstract class Creature {
       this.level = level;
    }
 
+   public void setMark(Mark mark) {
+      this.mark = mark;
+   }
+
    /** 
     * Take attack from the opponent
     * @param dmg Damage object of the opponent
     * @return boolean indicates win or not
     */
+    
    public abstract boolean attack(Damage dmg);
 
    /**
