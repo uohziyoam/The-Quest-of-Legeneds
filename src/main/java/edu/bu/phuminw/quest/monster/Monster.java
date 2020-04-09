@@ -7,7 +7,6 @@ package edu.bu.phuminw.quest.monster;
 import java.util.Random;
 
 import edu.bu.phuminw.quest.board.Cell;
-import edu.bu.phuminw.quest.board.Mark;
 import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damagable;
 import edu.bu.phuminw.quest.util.Damage;
@@ -19,7 +18,6 @@ import edu.bu.phuminw.quest.util.Tuple;
 
 public abstract class Monster extends Creature implements Damagable {
     // private String name;
-    private Mark mark;
     // private double hp;
     // private int level;
     private double baseDamage;
@@ -38,10 +36,6 @@ public abstract class Monster extends Creature implements Damagable {
         this.defense = defense;
         this.dodge = dodge;
         position = null;
-    }
-
-    public Mark getMark() {
-        return mark;
     }
 
     /**
