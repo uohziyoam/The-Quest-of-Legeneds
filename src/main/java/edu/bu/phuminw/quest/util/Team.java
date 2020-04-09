@@ -7,7 +7,9 @@ package edu.bu.phuminw.quest.util;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A team class holding any object as a team
@@ -146,9 +148,41 @@ public class Team<T> implements Iterable<T> {
         return id;
     }
 
-    public ArrayList<T> getMember() {
+    /**
+     * Return a list of members
+     * 
+     * @return A list of members
+     */
+
+    public List<T> getMember() {
+        List<T> toRet = new ArrayList<T>();
+
+        for (T item: members)
+            toRet.add(item);
+
+        return toRet;
+    }
+
+    public T getAt(int i) {
+        return members.get(i);
+    }
+
+    /**
+     * Shuffle members order
+     * 
+     * @return List of shuffled result
+     */
+
+    public List<T> getRandomMembers() {
+        Collections.shuffle(members);
         return members;
     }
+
+    /**
+     * Draw a random member from a team
+     * 
+     * @return Random member
+     */
 
     public T randomMember() {
         Random rand = new Random();
