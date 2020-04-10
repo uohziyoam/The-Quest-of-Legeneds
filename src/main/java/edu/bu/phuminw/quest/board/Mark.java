@@ -15,12 +15,22 @@ public class Mark {
         this.symbol = symbol;
     }
 
+    public void set(String m) {
+        symbol = m;
+    }
+
     @Override
     public String toString() {
         return symbol;
     }
 
-    public void set(String m) {
-        symbol = m;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Mark) {
+            Mark other = (Mark) obj;
+            return symbol.equals(other.toString());
+        }
+
+        return false;
     }
 }

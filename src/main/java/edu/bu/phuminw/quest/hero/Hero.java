@@ -46,7 +46,7 @@ public abstract class Hero extends Creature implements Damagable {
     private IceSpell iceSpell;
     private LightningSpell lightningSpell;
     private StdinWrapper sinwrap;
-    private Cell<Object> position;
+    private Cell<?> position;
 
     public Hero(String name, double mana, double str, double dex, double agi, double money, double exp, Tuple<String, String> favor) {
         super(name, 1, 100);
@@ -111,20 +111,24 @@ public abstract class Hero extends Creature implements Damagable {
         return favor;
     }
 
-    public Cell<Object> getPosition(){
+    @Override
+    public Cell<?> getPosition(){
         return position;
     }
     
-    public void setPosition(Cell<Object> newPosition){
+    @Override
+    public void setPosition(Cell<?> newPosition){
         if (newPosition == null)
             throw new IllegalArgumentException("Null position cannot be accepted");
 
         // Remove bonus of old cell, if any
-        switch (position.getType()) {
-            case Quest.BUSH: skills.removeBonus(HSkills.DEX, 1.1);break;
-            case Quest.CAVE: skills.removeBonus(HSkills.AGI, 1.1);break;
-            case Quest.KOULOU: skills.removeBonus(HSkills.STR, 1.1);break;
-            default: ;
+        if (position != null) {
+            switch (position.getType()) {
+                case Quest.BUSH: skills.removeBonus(HSkills.DEX, 1.1);break;
+                case Quest.CAVE: skills.removeBonus(HSkills.AGI, 1.1);break;
+                case Quest.KOULOU: skills.removeBonus(HSkills.STR, 1.1);break;
+                default: ;
+            }
         }
 
         position = newPosition;

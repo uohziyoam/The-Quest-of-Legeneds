@@ -7,10 +7,10 @@ package edu.bu.phuminw.quest.util;
 import edu.bu.phuminw.quest.board.Mark;
 
 /**
- * Guideline that Creature object needs to have
+ * Template of Creature subclass object
  */
 
-public abstract class Creature {
+public abstract class Creature implements Positionable {
    private String name;
    private int level;
    private double hp;

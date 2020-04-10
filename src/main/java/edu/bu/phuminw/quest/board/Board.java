@@ -7,13 +7,15 @@ package edu.bu.phuminw.quest.board;
 // import java.io.PrintStream;
 import java.util.ArrayList;
 
+import edu.bu.phuminw.quest.util.Creature;
+
 /**
  * A board comprising of cells
  * 
  * @param <T> Object each cell holds
  */
 
-public class Board<T> {
+public class Board<T extends Creature> {
     ArrayList<ArrayList<Cell<T>>> board;
     int occupied;
 
@@ -71,6 +73,33 @@ public class Board<T> {
         return newPos <= boardSize[0] * boardSize[1] && newPos >= 1
                 && ((newPos + boardSize[1] - 1) / boardSize[1] == (oldPos + boardSize[1] - 1) / boardSize[1] // Same row
                 );
+    }
+
+    /**
+     * Move object across cells. Caller must check for validity regarding game rules.
+     * 
+     * @param from Source position
+     * @param to Destination position
+     * @return {@code true} if success; otherwise, {@code false}
+     */
+
+    public boolean move(int from, int to) {
+        Cell<T> dest = getCell(to);
+
+        // If dest is free
+        if (dest.getMark().toString().equals("") && dest.getOccipier() == null) {
+            Cell<T> src = getCell(from);
+
+            // Modify board cells
+            dest.set(src.getOccipier(), src.getMark()); // Copy into dest
+            src.set(null, new Mark("")); // Nulltify src
+
+            // Inform moving creature
+            dest.getOccipier().setPosition(dest);
+            return true;
+        }
+
+        return false;
     }
 
     public int[] getSize() {

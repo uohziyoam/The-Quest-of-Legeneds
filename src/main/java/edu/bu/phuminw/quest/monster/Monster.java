@@ -23,7 +23,7 @@ public abstract class Monster extends Creature implements Damagable {
     private double baseDamage;
     private double defense;
     private double dodge;
-    private Cell<Object> position;
+    private Cell<?> position;
 
     public Monster(String name, int level, double baseDamage, double defense, double dodge) {
         super(name, level, 100*level);
@@ -60,21 +60,18 @@ public abstract class Monster extends Creature implements Damagable {
         return dodge;
     }
 
-    public Cell<Object> getPosition(){
+    @Override
+    public Cell<?> getPosition() {
         return position;
     }
 
-    // public void moveAhead(){
-    //     //if no hero around, then move ahead;
-    //     Cell<Object> newPosition = new Cell<Object>(curPosition.getX()+1,curPosition.getY());
-    //     setCurrentPosition(newPosition);
-    // }
+    @Override
+    public void setPosition(Cell<?> newPosition) {
+        if (newPosition == null)
+            throw new IllegalArgumentException("Null position cannot be accepted");
 
-    public void settPosition(Cell<Object> newPosition){
-        this.position = newPosition;
+        position = newPosition;
     }
-    //NEW
-
 
     /**
      * Decide whether can dodge the incoming attack

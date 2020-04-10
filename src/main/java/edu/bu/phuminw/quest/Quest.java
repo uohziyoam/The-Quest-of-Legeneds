@@ -48,7 +48,7 @@ public class Quest {
 
     private StdinWrapper sinwrap;
     private Random rand;
-    private Board<Object> board;
+    private Board<Creature> board;
     private Player player;
     private HashMap<String, ArrayList<Hero>> heroes;
     private ArrayList<String> heroTypes;
@@ -66,7 +66,7 @@ public class Quest {
 
     public Quest(int row, int col) throws IOException, ClassNotFoundException {
         rand = new Random();
-        board = new Board<Object>(row, col);
+        board = new Board<Creature>(row, col);
         sinwrap = new StdinWrapper("");
         market = new Market();
         heroes = new HashMap<String, ArrayList<Hero>>();
@@ -506,7 +506,7 @@ public class Quest {
         player = new Player(rand.nextInt(), "DEBUG 1", MAXHERO);
         player.getMark().set("*");
         sinwrap = new StdinWrapper("");
-        board = new Board<Object>(board.getSize()[0], board.getSize()[1]);
+        board = new Board<Creature>(board.getSize()[0], board.getSize()[1]);
         assignCell();
         selectHero();
     }
@@ -557,6 +557,7 @@ public class Quest {
                     if (board.getCell(position).getType().equals(HERO_NEXUS) && board.getCell(position).getOccipier() == null) {
                         board.getCell(position).set(t, t.getMark());
                         assigned = true;
+                        t.setPosition(board.getCell(position));
                         break;
                     }
                 }
@@ -653,7 +654,7 @@ public class Quest {
         selectHero();
 
         while (true) {
-            market.shop(player);
+            // market.shop(player);
 
             // Assign starting point
             int[] size = board.getSize();
@@ -663,6 +664,17 @@ public class Quest {
             randomAssignPerLane(size[0], playerHeroes);
             // Assign monsters to the first row
             randomAssignPerLane(1, spawnMonster(playerHeroes.size()));
+
+            board.print(false);
+
+            for (int i = 57 ; i <= 64 ; i++) {
+                if (board.getCell(i).getOccipier() instanceof Hero) {
+                    System.out.printf("Moving from %d to %d\n", i, i-8);
+                    if (!board.move(i, i-8)) {
+                        System.out.println("Moving failed");
+                    }
+                }
+            }
 
             board.print(false);
             System.exit(0);
@@ -731,7 +743,7 @@ public class Quest {
                         break;
                     // Fight with monsters!
                     default:
-                        board.getCell(newPos).set(player, player.getMark());
+                        // board.getCell(newPos).set(player, player.getMark());
                         board.getCell(currentPos).clear();
                         currentPos = newPos;
                         board.print(false);
