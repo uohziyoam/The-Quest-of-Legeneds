@@ -13,11 +13,14 @@ import edu.bu.phuminw.quest.Quest;
  */
 
 public class Cell<T> {
+    private int position;
     private T occupier;
     private Mark mark;
     private String type;
 
-    public Cell(T occ, Mark m) {
+    public Cell(int pos, T occ, Mark m) {
+        position = pos;
+
         if (occupier == null && m == null) {
             clear();
         } else {
@@ -27,8 +30,8 @@ public class Cell<T> {
         }
     }
 
-    public Cell() {
-        this(null, null);
+    public Cell(int pos) {
+        this(pos, null, null);
     }
 
     public void clear() {
@@ -50,6 +53,10 @@ public class Cell<T> {
 
     public void setType(String t) {
         type = t;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public T getOccipier() {

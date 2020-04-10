@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -654,7 +655,7 @@ public class Quest {
         selectHero();
 
         while (true) {
-            // market.shop(player);
+            // market.shop(player); // TODO: reenable in real gameplay
 
             // Assign starting point
             int[] size = board.getSize();
@@ -667,74 +668,98 @@ public class Quest {
 
             board.print(false);
 
-            for (int i = 57 ; i <= 64 ; i++) {
-                if (board.getCell(i).getOccipier() instanceof Hero) {
-                    System.out.printf("Moving from %d to %d\n", i, i-8);
-                    if (!board.move(i, i-8)) {
-                        System.out.println("Moving failed");
-                    }
-                }
-            }
-
-            board.print(false);
-            System.exit(0);
-
-            int currentPos = rand.nextInt(size[0] * size[1]) + 1;
+            // int currentPos = rand.nextInt(size[0] * size[1]) + 1; // TODO: Depreciated, will be removed
 
             boolean end = false;
 
             while (!end) {
-                board.print(false);
-                sinwrap.setMessage("Which direction to move (W/A/S/D)? ");
+                
+                HashSet<Hero> movedHeroes = new HashSet<Hero>();
+                
+                // All three heroes must move, once each
+                while (movedHeroes.size() < 3) {
+                    board.print(false);
+                    Hero toMove;
+                    
+                    // Each hero can move once per round
+                    do {
+                        toMove = player.getHero();
+                    } while (toMove == null || movedHeroes.contains(toMove));
+                
+                    boolean valid = false;
+                    sinwrap.setMessage("Which direction to move (W/A/S/D/T)? ");
 
-                boolean valid = false;
-                int newPos = -1;
+                    valid = false;
+                    int currentPos = toMove.getPosition().getPosition();
+                    int newPos = -1;
 
-                // Ask for move and store new position
-                while (!end && !valid) {
-                    Character choice = sinwrap.nextChar();
-                    if (choice == null) {
-                        if (sinwrap.isEnd() || sinwrap.isQuit()) {
-                            Quest.quit();
-                            return;
-                        } else if (sinwrap.isInfo())
-                            player.printBasicInfo();
-                    } else {
-                        choice = Character.toUpperCase(choice);
-                        switch (choice) {
-                            case 'W':
-                                if (board.isInBoard(currentPos - size[1])) {
-                                    valid = true;
-                                    newPos = currentPos - size[1];
-                                }
-                                break;
-                            case 'A':
-                                if (board.isInBoard(currentPos - 1)
-                                        && board.isValidADMove(currentPos, currentPos - 1)) {
-                                    valid = true;
-                                    newPos = currentPos - 1;
-                                }
-                                break;
-                            case 'S':
-                                if (board.isInBoard(currentPos + size[1] + 1)) {
-                                    valid = true;
-                                    newPos += currentPos + size[1] + 1;
-                                }
-                                break;
-                            case 'D':
-                                if (board.isInBoard(currentPos + 1)
-                                        && board.isValidADMove(currentPos, currentPos + 1)) {
-                                    valid = true;
-                                    newPos = currentPos + 1;
-                                }
-                                break;
-                            default:
-                                System.err.println("Unexpected error of choice in moving");
+                    // Ask for move and store new position
+                    while (!end && !valid) {
+                        Character choice = sinwrap.nextChar();
+                        if (choice == null) {
+                            if (sinwrap.isEnd() || sinwrap.isQuit()) {
+                                Quest.quit();
+                                return;
+                            } 
+                            else if (sinwrap.isInfo())
+                                board.print(false);
+                            else if (sinwrap.isTeleport()) {
+                                // TODO: implement transport to other lane: ask for position in other
+                                // land and move
+                            }
+                        } else {
+                            choice = Character.toUpperCase(choice);
+                            switch (choice) {
+                                case 'W':
+                                    if (board.isInBoard(currentPos - size[1])) {
+                                        valid = true;
+                                        newPos = currentPos - size[1];
+                                    }
+                                    break;
+                                case 'A':
+                                    if (board.isInBoard(currentPos - 1)
+                                            && board.isValidADMove(currentPos, currentPos - 1)) {
+                                        valid = true;
+                                        newPos = currentPos - 1;
+                                    }
+                                    break;
+                                case 'S':
+                                    if (board.isInBoard(currentPos + size[1] + 1)) {
+                                        valid = true;
+                                        newPos += currentPos + size[1] + 1;
+                                    }
+                                    break;
+                                case 'D':
+                                    if (board.isInBoard(currentPos + 1)
+                                            && board.isValidADMove(currentPos, currentPos + 1)) {
+                                        valid = true;
+                                        newPos = currentPos + 1;
+                                    }
+                                    break;
+                                default:
+                                    System.err.println("Unexpected error of choice in moving");
+                            }
                         }
                     }
+
+                    if (board.getCell(newPos).getOccipier() != null && board.getCell(newPos).getOccipier() instanceof Monster) {
+                        // TODO: Engage in fight with Monster
+                    }
+                    else if (board.getCell(newPos).getType().equals(HERO_NEXUS)) {
+                        // TODO: hero wins. Conclude the game and ask to play again or exit
+                    }
+
+                    board.move(currentPos, newPos);
+                    movedHeroes.add(toMove);
                 }
 
-                switch (board.getCell(newPos).getMark().toString()) {
+                System.exit(0); // Stop after finish move testing
+                // TODO: Move monster, spawn new one if needed, and check whether any monster already
+                // reached hero nexus
+
+                int newPos = 0;int currentPos = 0;
+                boolean valid = false;
+                switch (board.getCell(newPos).getType()) {
                     // case MARKET:
                     //     market.shop(player);
                     //     break;

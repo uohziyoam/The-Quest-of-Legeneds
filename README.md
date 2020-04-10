@@ -7,7 +7,7 @@
 - [x] Board is responsible for moving across Cells and informing hero/monster being moved
 - [x] Heroes and Monsters maintains current position (main logic must call board ```move()```
 - [x] Hero takes into account benefit of special cells when in that cell.
-- [ ] Heroes move separately
+- [x] Heroes move separately, once each per round
 - [ ] Hero can transport to other lanes
 - [ ] Hero should be able to buy items after departed from nexus
 - [ ] Check when encounter monster(s) and engage in fight

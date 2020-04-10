@@ -4,6 +4,7 @@
 
 package edu.bu.phuminw.quest.player;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import edu.bu.phuminw.quest.Quest;
 import edu.bu.phuminw.quest.board.Mark;
 import edu.bu.phuminw.quest.hero.Hero;
 import edu.bu.phuminw.quest.io.StdinWrapper;
+import edu.bu.phuminw.quest.util.HeroSorter;
 import edu.bu.phuminw.quest.util.Team;
 
 /**
@@ -91,6 +93,7 @@ public class Player {
 
     public Hero getHero() { 
         List<Hero> heroMembers = heroes.getMember();
+        Collections.sort(heroMembers, new HeroSorter());
         sinwrap.setMessage("Which hero (select by #, e to end, q to quit)? ");
 
         while (true) {
@@ -175,7 +178,9 @@ public class Player {
         System.out.print(hline);
         
         int i = 1;
-        for (Hero h: heroes.getMember()) {
+        List<Hero> heroMembers = heroes.getMember();
+        Collections.sort(heroMembers, new HeroSorter());
+        for (Hero h: heroMembers) {
             System.out.format(format, i, h.getName(), h.getClass().getSimpleName(), h.getLevel(), h.getExp(), h.getMoney(), h.getHp(), h.getMana(), String.format("%.2f/%.2f/%.2f", h.getSkills().getStr(), h.getSkills().getDex(), h.getSkills().getAgi()));
             System.out.print(hline);
             i++;

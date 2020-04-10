@@ -7,6 +7,7 @@ package edu.bu.phuminw.quest.board;
 // import java.io.PrintStream;
 import java.util.ArrayList;
 
+import edu.bu.phuminw.quest.Quest;
 import edu.bu.phuminw.quest.util.Creature;
 
 /**
@@ -25,7 +26,7 @@ public class Board<T extends Creature> {
         for (int i = 0; i < row; i++) {
             board.add(new ArrayList<Cell<T>>(col));
             for (int j = 0; j < col; j++) {
-                board.get(i).add(new Cell<T>());
+                board.get(i).add(new Cell<T>((col*i)+j+1));
             }
         }
 
@@ -61,7 +62,7 @@ public class Board<T extends Creature> {
     }
 
     /**
-     * Check whether right/left move is valid i.e. in the board
+     * Check whether right/left move is valid i.e. in the board and in lane
      * 
      * @param oldPos Numeric old position
      * @param newPos Numeric new position
@@ -69,9 +70,10 @@ public class Board<T extends Creature> {
      */
 
     public boolean isValidADMove(int oldPos, int newPos) {
-        int[] boardSize = new int[] { board.size(), board.get(0).size() };
+        int[] boardSize = new int[] {board.size(), board.get(0).size()};
         return newPos <= boardSize[0] * boardSize[1] && newPos >= 1
                 && ((newPos + boardSize[1] - 1) / boardSize[1] == (oldPos + boardSize[1] - 1) / boardSize[1] // Same row
+                && !getCell(newPos).getType().equals(Quest.FORBIDDEN) // Not moving to forbidden
                 );
     }
 
@@ -137,7 +139,7 @@ public class Board<T extends Creature> {
     public void reset() {
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board.get(i).size(); j++) {
-                board.get(i).set(j, new Cell<T>());
+                board.get(i).set(j, new Cell<T>((board.get(i).size()*i)+j+1));
             }
         }
 
