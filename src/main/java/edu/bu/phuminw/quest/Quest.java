@@ -46,6 +46,8 @@ public class Quest {
     public static final String CAVE = "C";
     public static final String KOULOU = "K";
     public static final String FORBIDDEN = "X";
+    
+    private final int MONSPAWNROUND = 8;
 
     private StdinWrapper sinwrap;
     private Random rand;
@@ -513,6 +515,32 @@ public class Quest {
     }
 
     /**
+     * Compute lane map given row [start, end)
+     * 
+     * @param row row number
+     * @return A list of lane map consisting of tuples
+     */
+
+    private ArrayList<Tuple<Integer, Integer>> getLaneMap(int row) {
+        int[] boardSize = board.getSize();
+
+        // Map of each lane
+        ArrayList<Tuple<Integer, Integer>> laneMap = new ArrayList<Tuple<Integer, Integer>>();
+        for (int i = ((row-1) * boardSize[1]) + 1 ; i <= boardSize[1]*row ;) {
+            int forbidInd = i+1;
+            
+            while (forbidInd <= boardSize[1]*row && !board.getCell(forbidInd).getType().equals(FORBIDDEN)) {
+                forbidInd++;
+            }
+
+            laneMap.add(new Tuple<Integer,Integer>(i, forbidInd));
+            i = forbidInd+1;
+        }
+
+        return laneMap;
+    }
+
+    /**
      * Randomly assign Creatures to given row. One per lane.
      * 
      * @param <T> Creature object
@@ -521,20 +549,8 @@ public class Quest {
      */
 
     private <T extends Creature> void randomAssignPerLane(int row, List<T> toPlace) {
-        int[] boardSize = board.getSize();
-
         // Map of each lane
-        ArrayList<Tuple<Integer, Integer>> rowMap = new ArrayList<Tuple<Integer, Integer>>();
-        for (int i = ((row-1) * boardSize[1]) + 1 ; i <= boardSize[1]*row ;) {
-            int forbidInd = i+1;
-            
-            while (forbidInd <= boardSize[1]*row && !board.getCell(forbidInd).getType().equals(FORBIDDEN)) {
-                forbidInd++;
-            }
-
-            rowMap.add(new Tuple<Integer,Integer>(i, forbidInd));
-            i = forbidInd+1;
-        }
+        ArrayList<Tuple<Integer, Integer>> rowMap = getLaneMap(row);
 
         ListIterator<Tuple<Integer, Integer>> iter = rowMap.listIterator();
 
@@ -636,6 +652,84 @@ public class Quest {
         return monTeam;
     }
 
+    private <T extends Hero, U extends Monster> void engageFight(T hero, U mon) {
+
+    }
+
+    /**
+     * Teleport given hero to other lane or do nothing if the player chooses to do so
+     * 
+     * @param h
+     */
+    private int teleport(Hero h) {
+        sinwrap.setMessage("Which position to transport to? ");
+        Integer dest;
+
+        while (true) {
+            board.print(true);
+            dest = sinwrap.nextInt();
+
+            if (dest == null) {
+                if (sinwrap.isQuit()) {
+                    Quest.quit();
+                } 
+                else if (sinwrap.isInfo())
+                    board.print(true);
+            }
+            else {
+                if (board.isInBoard(dest) && !board.getCell(dest).getType().equals(FORBIDDEN)) {
+                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((h.getPosition().getPosition()-1)/8)+1);
+
+                    // Tuple<Integer, Integer> oldLane = null;
+                    int oldLane = -1;
+                    int newLane = -1;
+                    Tuple<Integer, Integer> newLaneTup = null;
+
+                    for (int i = 0 ; i < laneMap.size() ; i++) {
+                        if (laneMap.get(i).getFirst() <= h.getPosition().getPosition() && h.getPosition().getPosition() < laneMap.get(i).getSecond()) {
+                            oldLane = i;
+                            break;
+                        }
+                    }
+
+                    laneMap = getLaneMap(((dest-1)/8)+1);
+
+                    for (int i = 0 ; i < laneMap.size() ; i++) {
+                        if (laneMap.get(i).getFirst() <= dest && dest < laneMap.get(i).getSecond()) {
+                            newLane = i;
+                            newLaneTup = laneMap.get(i);
+                            break;
+                        }
+                    }
+
+                    // Allow only moving to different lane
+                    if (newLane != oldLane) {
+                        int[] boardSize = board.getSize();
+
+                        // Check if any enemy behind or in the row of the new destination
+                        boolean existMon = false;
+
+                        for (int rowOffset = 0 ; rowOffset < boardSize[0]-(dest-1)/8 ; rowOffset++) {
+                            for (int pos = newLaneTup.getFirst()+(rowOffset*boardSize[1]) ; pos < newLaneTup.getSecond()+(rowOffset*boardSize[1]) ; pos++) {
+                                if (board.getCell(pos).getOccipier() instanceof Monster) {
+                                    existMon = true;
+                                    break;
+                                }
+                            }
+                            if (existMon)
+                                break;
+                        }
+
+                        // Clear to place at this position
+                        if (!existMon) {
+                            return dest;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Core method contains game logic
      * 
@@ -654,17 +748,18 @@ public class Quest {
 
         selectHero();
 
+        // Loop game play until decided to end
         while (true) {
             // market.shop(player); // TODO: reenable in real gameplay
 
             // Assign starting point
             int[] size = board.getSize();
+            int round = 0; // Round count
             List<Hero> playerHeroes = player.getHeroTeam().getRandomMembers();
+            ArrayList<Monster> monsters = new ArrayList<Monster>(); // Maintain active monsters
 
             // Assign heroes to the last row
             randomAssignPerLane(size[0], playerHeroes);
-            // Assign monsters to the first row
-            randomAssignPerLane(1, spawnMonster(playerHeroes.size()));
 
             board.print(false);
 
@@ -672,8 +767,21 @@ public class Quest {
 
             boolean end = false;
 
+            // Per round loop: Move monsters, move heroes (move/fight/teleport/etc)
             while (!end) {
+                /* 1) Spawn new monsters if in right timing */
+                if (round % MONSPAWNROUND == 0) {
+                    ArrayList<? extends Monster> spawnedMon = spawnMonster(playerHeroes.size());
+                    monsters.addAll(spawnedMon);
+                    // Assign monsters to the first row
+                    randomAssignPerLane(1,spawnedMon);
+                }
+
+                /* 2) Move monsters forward */
+                for (Monster m: monsters)
+                    board.move(m.getPosition().getPosition(), m.getPosition().getPosition()+size[1]);
                 
+                /* 3) Move all heroes */
                 HashSet<Hero> movedHeroes = new HashSet<Hero>();
                 
                 // All three heroes must move, once each
@@ -704,8 +812,8 @@ public class Quest {
                             else if (sinwrap.isInfo())
                                 board.print(false);
                             else if (sinwrap.isTeleport()) {
-                                // TODO: implement transport to other lane: ask for position in other
-                                // land and move
+                                newPos = teleport(toMove);
+                                valid = true;
                             }
                         } else {
                             choice = Character.toUpperCase(choice);
@@ -718,7 +826,7 @@ public class Quest {
                                     break;
                                 case 'A':
                                     if (board.isInBoard(currentPos - 1)
-                                            && board.isValidADMove(currentPos, currentPos - 1)) {
+                                            && board.isSameRow(currentPos, currentPos - 1)) {
                                         valid = true;
                                         newPos = currentPos - 1;
                                     }
@@ -731,7 +839,7 @@ public class Quest {
                                     break;
                                 case 'D':
                                     if (board.isInBoard(currentPos + 1)
-                                            && board.isValidADMove(currentPos, currentPos + 1)) {
+                                            && board.isSameRow(currentPos, currentPos + 1)) {
                                         valid = true;
                                         newPos = currentPos + 1;
                                     }
@@ -742,18 +850,35 @@ public class Quest {
                         }
                     }
 
-                    if (board.getCell(newPos).getOccipier() != null && board.getCell(newPos).getOccipier() instanceof Monster) {
-                        // TODO: Engage in fight with Monster
-                    }
-                    else if (board.getCell(newPos).getType().equals(HERO_NEXUS)) {
-                        // TODO: hero wins. Conclude the game and ask to play again or exit
-                    }
-
                     board.move(currentPos, newPos);
                     movedHeroes.add(toMove);
                 }
 
+                board.print(false); // Show the current board after move
+
                 System.exit(0); // Stop after finish move testing
+                /* 4) Check whether reached nexus, engage in fight if not */
+
+                // Check winning
+                for (Hero h: playerHeroes) {
+                    if (h.getPosition().getType().equals(MONSTER_NEXUS)) {
+                        // This hero reached nexus
+                        System.out.printf("%s has reached Monster's nexus. Game ended.\n", h.getName());
+                        end = true;
+                        break;
+                    }
+                }
+
+                // Engage in fight: teleport if wanted (once per hero), choose hero for fight
+                // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
+                for (Hero h: playerHeroes) {
+                    ArrayList<Hero> teleportedHero = new ArrayList<Hero>();
+
+                    while (teleportedHero.size() < 3) {
+                        System.out.println("Selecting hero to teleport");
+                    }
+                }
+
                 // TODO: Move monster, spawn new one if needed, and check whether any monster already
                 // reached hero nexus
 
@@ -873,6 +998,8 @@ public class Quest {
                         }
                         valid = true;
                 }
+
+                round++;
             }
 
             sinwrap.setMessage("Wanna play again (Y/N)? ");

@@ -62,14 +62,14 @@ public class Board<T extends Creature> {
     }
 
     /**
-     * Check whether right/left move is valid i.e. in the board and in lane
+     * Check whether in the same row and not moving to forbidden
      * 
      * @param oldPos Numeric old position
      * @param newPos Numeric new position
      * @return boolean represents the result
      */
 
-    public boolean isValidADMove(int oldPos, int newPos) {
+    public boolean isSameRow(int oldPos, int newPos) {
         int[] boardSize = new int[] {board.size(), board.get(0).size()};
         return newPos <= boardSize[0] * boardSize[1] && newPos >= 1
                 && ((newPos + boardSize[1] - 1) / boardSize[1] == (oldPos + boardSize[1] - 1) / boardSize[1] // Same row
@@ -162,7 +162,7 @@ public class Board<T extends Creature> {
             }
             System.out.println();
             for (int j = 0; j < board.get(i).size(); j++) {
-                System.out.format("| %1$5s |  ", board.get(i).get(j).getMark());
+                System.out.format("| %1$5s |  ", (help && board.get(i).get(j).getMark().toString().equals("")) ? (i*board.get(i).size()+j+1) : board.get(i).get(j).getMark());
             }
             System.out.println();
             for (int j = 0; j < board.get(i).size(); j++) {
