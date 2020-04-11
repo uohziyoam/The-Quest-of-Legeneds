@@ -11,5 +11,5 @@
 - [x] Hero can transport to other lanes
 - [ ] Hero should be able to buy items after departed from nexus
 - [ ] Check when encounter monster(s) and engage in fight
-- [ ] Automatically spawn monsters every 8(?) rounds
+- [x] Automatically spawn monsters every 8(?) rounds
 - [ ] Check win/lose when hero or monster reach nexus of the opponent
