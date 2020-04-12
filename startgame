@@ -1,8 +1,6 @@
 #!/bin/bash
 
-JVER="$(javac --version | awk '{print $2}')"
-
-if [ "$JVER" -lt "14" ]; then
+if [ "$(javac --version | awk '{print $2}')" -lt "14" ]; then
         echo "Please update Java to version 14 or newer"
         exit
 fi
