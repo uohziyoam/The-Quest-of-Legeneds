@@ -795,7 +795,7 @@ public class Quest {
                     } while (toMove == null || movedHeroes.contains(toMove));
                 
                     boolean valid = false;
-                    sinwrap.setMessage("Which direction to move (W/A/S/D/T)? ");
+                    sinwrap.setMessage("Which direction to move (W/A/S/D/T/B)? ");
 
                     valid = false;
                     int currentPos = toMove.getPosition().getPosition();
@@ -813,6 +813,33 @@ public class Quest {
                                 board.print(false);
                             else if (sinwrap.isTeleport()) {
                                 newPos = teleport(toMove);
+                                valid = true;
+                            }
+                            else if (sinwrap.isBackNexus()) {
+                                // Move down until reach nexus
+                                newPos = currentPos;
+                                while (newPos < size[0]*size[1])
+                                    newPos += size[1];
+
+                                // Find alternative nexus if this one is occupied by some hero
+                                if (board.getCell(newPos).getOccipier() != null) {
+                                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((newPos-1)/8)+1);
+
+                                    Tuple<Integer, Integer> lane = null;
+
+                                    for (Tuple<Integer, Integer> l: laneMap) {
+                                        if (l.getFirst() <= newPos && newPos < l.getSecond()) {
+                                            lane = l;
+                                            break;
+                                        }
+                                    }
+
+                                    int i;
+                                    for (i = lane.getFirst() ; i < lane.getSecond() && board.getCell(i).getOccipier() != null ; i++) {}
+
+                                    newPos = i;
+                                }
+
                                 valid = true;
                             }
                         } else {
@@ -851,7 +878,7 @@ public class Quest {
                     }
 
                     board.move(currentPos, newPos);
-                    movedHeroes.add(toMove);
+                    // movedHeroes.add(toMove);
                 }
 
                 board.print(false); // Show the current board after move
@@ -869,7 +896,7 @@ public class Quest {
                     }
                 }
 
-                // Engage in fight: teleport if wanted (once per hero), choose hero for fight
+                // Engage in fight: choose hero for fight
                 // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
                 for (Hero h: playerHeroes) {
                     ArrayList<Hero> teleportedHero = new ArrayList<Hero>();

@@ -9,6 +9,7 @@
 - [x] Hero takes into account benefit of special cells when in that cell.
 - [x] Heroes move separately, once each per round
 - [x] Hero can transport to other lanes
+- [x] Hero can move back to nexus
 - [ ] Hero should be able to buy items after departed from nexus
 - [ ] Check when encounter monster(s) and engage in fight
 - [x] Automatically spawn monsters every 8(?) rounds

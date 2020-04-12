@@ -89,7 +89,7 @@ public class Board<T extends Creature> {
         Cell<T> dest = getCell(to);
 
         // If dest is free
-        if (dest.getMark().toString().equals("") && dest.getOccipier() == null) {
+        if ( dest.getOccipier() == null && dest.getMark().toString().equals("")) {
             Cell<T> src = getCell(from);
 
             // Modify board cells
