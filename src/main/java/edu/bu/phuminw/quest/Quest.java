@@ -886,15 +886,16 @@ public class Quest {
                 System.exit(0); // Stop after finish move testing
                 /* 4) Check whether reached nexus, engage in fight if not */
 
-                // Check winning
-                for (Hero h: playerHeroes) {
-                    if (h.getPosition().getType().equals(MONSTER_NEXUS)) {
-                        // This hero reached nexus
-                        System.out.printf("%s has reached Monster's nexus. Game ended.\n", h.getName());
-                        end = true;
-                        break;
-                    }
-                }
+                //NEW added by Jessy START:
+                // // Check winning
+                // for (Hero h: playerHeroes) {
+                //     if (h.getPosition().getType().equals(MONSTER_NEXUS)) {
+                //         // This hero reached nexus
+                //         System.out.printf("%s has reached Monster's nexus. Game ended.\n", h.getName());
+                //         end = true;
+                //         break;
+                //     }
+                // }
 
                 // Engage in fight: choose hero for fight
                 // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
@@ -908,6 +909,14 @@ public class Quest {
 
                 // TODO: Move monster, spawn new one if needed, and check whether any monster already
                 // reached hero nexus
+
+                if(checkIfEnd(playerHeroes, Monsters))
+                {
+                    end = true;
+                    break;
+                }
+                //NEW added by Jessy END
+
 
                 int newPos = 0;int currentPos = 0;
                 boolean valid = false;
@@ -1057,6 +1066,35 @@ public class Quest {
         System.out.println("Bye...\n");
         System.exit(0);
     }
+
+    //NEW added by Jessy START:
+
+    /**
+     * Determine if either heros or monsters has won
+     * @param layerHeroes,Monsters
+     * @return boolean value of whether either heros or monsters has won
+     */
+    public boolean checkIfEnd(List<Hero> playerHeroes,ArrayList<Monster> Monsters){
+        //if Heros win:
+        for (Hero h: playerHeroes) {
+            if (h.getPosition().getType().equals(MONSTER_NEXUS)) {
+                // This hero reached nexus
+                System.out.printf("%s has reached Monster's nexus. Game ended.\n", h.getName());
+                return true;
+            }
+        }
+
+        //if Monsters win:
+        for (Monster m: Monsters) {
+            if (m.getPosition().getType().equals(HERO_NEXUS)) {
+                // This monster reached nexus
+                System.out.printf("%s has reached Hero's nexus. Game ended.\n", m.getName());
+                return true;
+            }
+        }
+        return false;
+    }
+    //NEW added by Jessy END
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Quest q = new Quest(8, 8);
