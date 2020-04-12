@@ -128,7 +128,7 @@ public class HSkills {
     @Override
     
     public boolean equals(Object other) {
-        if (getClass().equals(other.getClass()))
+        if (!getClass().equals(other.getClass()))
             return false;
         
         HSkills otherS = (HSkills) other;

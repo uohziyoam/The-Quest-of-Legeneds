@@ -32,11 +32,11 @@ public class Tuple<T, U> {
      * @param other object to check against
      * @return equality result 
      */
-
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
+    
     public boolean equals(Object other) {
-        if (getClass().equals(other.getClass()))
+        if (!getClass().equals(other.getClass()))
             return false;
         Tuple otherT = (Tuple) other;
         try {
