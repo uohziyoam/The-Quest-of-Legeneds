@@ -10,7 +10,7 @@
 - [x] Heroes move separately, once each per round
 - [x] Hero can transport to other lanes
 - [x] Hero can move back to nexus
-- [ ] Hero should be able to buy items after departed from nexus
+- [ ] Hero can only enter market when in nexus
 - [ ] Check when encounter monster(s) and engage in fight
 - [x] Automatically spawn monsters every 8(?) rounds
-- [ ] Check win/lose when hero or monster reach nexus of the opponent
+- [x] Check win/lose when hero or monster reach nexus of the opponent
