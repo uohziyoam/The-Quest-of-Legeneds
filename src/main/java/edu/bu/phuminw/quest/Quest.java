@@ -31,6 +31,7 @@ import edu.bu.phuminw.quest.monster.Exoskeleton;
 import edu.bu.phuminw.quest.monster.Monster;
 import edu.bu.phuminw.quest.monster.Spirit;
 import edu.bu.phuminw.quest.player.Player;
+import edu.bu.phuminw.quest.util.Color;
 import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damage;
 import edu.bu.phuminw.quest.util.Team;
@@ -38,13 +39,13 @@ import edu.bu.phuminw.quest.util.Tuple;
 
 public class Quest {
     private final int MAXHERO = 3;
-    public static final String HERO_NEXUS = "N";
-    public static final String MONSTER_NEXUS = "N";
+    public static final String HERO_NEXUS = Color.ANSI_GREEN_BACKGROUND+"N"+Color.ANSI_RESET;
+    public static final String MONSTER_NEXUS = Color.ANSI_GREEN_BACKGROUND +"N"+Color.ANSI_RESET;
     public static final String PLAIN = "P";
     public static final String BUSH = "B";
     public static final String CAVE = "C";
     public static final String KOULOU = "K";
-    public static final String FORBIDDEN = "X";
+    public static final String FORBIDDEN = Color.ANSI_RED_BACKGROUND+"X"+Color.ANSI_RESET;
     
     private final int MONSPAWNROUND = 8;
     private final int TELEPORTMANA = 50;
@@ -113,14 +114,14 @@ public class Quest {
         for (int j = 1; j <= boardSize[1]; j++) {
             board.getCell((j - 1) * boardSize[1] + 3).setType(FORBIDDEN);
             // Special mark for forbidden cells
-            board.getCell((j - 1) * boardSize[1] + 3).set(null, new Mark("X X X"));
+            board.getCell((j - 1) * boardSize[1] + 3).set(null, new Mark(Color.ANSI_RED+"X X X"+Color.ANSI_RESET));
             plainCell.remove(Integer.valueOf((j - 1) * boardSize[1] + 3));
         }
 
         for (int j = 1; j <= boardSize[1]; j++) {
             board.getCell((j - 1) * boardSize[1] + 6).setType(FORBIDDEN);
             // Special mark for forbidden cells
-            board.getCell((j - 1) * boardSize[1] + 6).set(null, new Mark("X X X"));
+            board.getCell((j - 1) * boardSize[1] + 6).set(null, new Mark(Color.ANSI_RED+"X X X"+Color.ANSI_RESET));
             plainCell.remove(Integer.valueOf((j - 1) * boardSize[1] + 6));
         }
 
@@ -776,6 +777,7 @@ public class Quest {
      */
 
     public void play() throws ClassNotFoundException, IOException {
+        displayTitle();
         // Create player for Quest
         sinwrap.setMessage("Please enter your name: ");
         String token;
@@ -1063,6 +1065,19 @@ public class Quest {
             }
         }
     }
+
+    public void displayTitle()
+    {
+        System.out.println("   ___  _   _ _____ ____ _____    ___  _____   _     _____ ____ _____ _   _ ____  ____ ");
+        System.out.println("  / _ "+"\\"+"| | | | ____/ ___|_   _|  / _ "+"\\"+"|  ___| | |   | ____/ ___| ____| "+"\\"+" | |  _ "+"\\"+"/ ___| ");
+        System.out.println(" | | | | | | |  _| "+"\\"+"___ "+"\\"+" | |   | | | | |_    | |   |  _|| |  _|  _| |  "+"\\"+"| | | | "+"\\"+"___ "+"\\"+" ");
+        System.out.println(" | |_| | |_| | |___ ___) || |   | |_| |  _|   | |___| |__| |_| | |___| |"+"\\"+"  | |_| |___) |");
+        System.out.println("  "+"\\"+"__"+"\\"+"_"+"\\"+""+"\\"+"___/|_____|____/ |_|    "+"\\"+"___/|_|     |_____|_____"+"\\"+"____|_____|_| "+"\\"+"_|____/|____/ ");
+        System.out.println("                                                                                        ");
+
+    }
+
+    
 
     public void load() {
         // TODO: load game from save

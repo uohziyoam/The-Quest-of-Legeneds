@@ -5,7 +5,7 @@
 package edu.bu.phuminw.quest.board;
 
 import edu.bu.phuminw.quest.Quest;
-
+import edu.bu.phuminw.quest.util.Color;
 /**
  * A individual cell of a board
  * 
@@ -73,14 +73,22 @@ public class Cell<T> {
 
     @Override
     public String toString() {
-        return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s", switch (type) {
-            case Quest.HERO_NEXUS -> "N";
-            case Quest.FORBIDDEN -> "I";
-            case Quest.BUSH -> "B";
-            case Quest.PLAIN -> "P";
-            case Quest.CAVE -> "C";
-            default -> "P";
-        }, mark);
+        switch(this.type)
+        {
+            case Quest.HERO_NEXUS:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","N",mark);
+            case Quest.FORBIDDEN:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","I",mark);
+            case Quest.BUSH:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","B",mark);
+            case Quest.PLAIN:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","P",mark);
+            case Quest.CAVE:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","C",mark);
+            default:
+                return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s","P",mark);
+            
+        }
     }
 
     public boolean isOccupied() {

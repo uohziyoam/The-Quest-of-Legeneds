@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import edu.bu.phuminw.quest.Quest;
 import edu.bu.phuminw.quest.util.Creature;
 
+
 /**
  * A board comprising of cells
  * 
