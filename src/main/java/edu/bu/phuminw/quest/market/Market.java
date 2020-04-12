@@ -140,7 +140,8 @@ public class Market {
 
     public void shop(Hero h) throws ClassNotFoundException, IOException {
         while (true) {
-            sinwrap.setMessage("Want to buy (b) or sell (s)? ");
+            System.out.printf("Shopping on %s\n", h.getName());
+            sinwrap.setMessage("Want to buy (b)/sell (s)/end (e) ? ");
             Character token = sinwrap.nextChar();
 
             if (token == null) {
@@ -154,13 +155,15 @@ public class Market {
                     h.printInventory();
                     System.out.println();
                 }
+                else if (sinwrap.isBackNexus()) // Same as back nexus special key, so ...
+                    buy(h);
             }
             else {
-                if (Character.toUpperCase(token) == 'B')
-                {
-                    buy(h);
-                }
-                else if (Character.toUpperCase(token) == 'S') {
+                // if (Character.toUpperCase(token) == 'B')
+                // {
+                //     buy(h);
+                // }
+                if (Character.toUpperCase(token) == 'S') {
                     sell(h);
                 }
             }
