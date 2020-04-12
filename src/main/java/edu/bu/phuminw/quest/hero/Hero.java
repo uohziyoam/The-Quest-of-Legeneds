@@ -398,7 +398,7 @@ public abstract class Hero extends Creature implements Damagable {
                     success = true;
                 }
                 else if (sinwrap.isEnd()) {
-                    return new Damage(0); // Wanna end? no attack is made
+                    return null; // Wanna end? no attack is made
                 }
                 else if (sinwrap.isInfo())
                     printFightingInfo();
