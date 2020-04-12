@@ -111,6 +111,10 @@ public abstract class Hero extends Creature implements Damagable {
         return favor;
     }
 
+    public void reduceMana() {
+        this.mana -= 20;
+    }
+
     @Override
     public Cell<?> getPosition(){
         return position;
