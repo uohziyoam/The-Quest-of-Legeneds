@@ -15,3 +15,5 @@
 - [x] Automatically spawn monsters every 8(?) rounds
 - [x] Check win/lose when hero or monster reach nexus of the opponent
 - [ ] Transport seems to be too OP. Might need some limitation.
+- [ ] ASCII art + colored text
+- [ ] Address verbosity in gameplay
