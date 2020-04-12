@@ -73,13 +73,6 @@ public class Cell<T> {
 
     @Override
     public String toString() {
-        // String boarderMarker = switch (type) {
-        // case Quest.NEXUS-> "N";
-        // case Quest.FORBIDDEN-> "I";
-        // case Quest.BUSH-> "B";
-        // default-> "P";
-        // };
-
         return String.format("%1$s - %1$s - %1$s\n| %2$5s |\n%1$s - %1$s - %1$s", switch (type) {
             case Quest.HERO_NEXUS -> "N";
             case Quest.FORBIDDEN -> "I";
