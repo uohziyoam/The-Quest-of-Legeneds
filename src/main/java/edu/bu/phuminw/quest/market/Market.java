@@ -131,6 +131,43 @@ public class Market {
     }
 
     /**
+     * Initiate shopping on a hero
+     * 
+     * @param h Hero to shop
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
+
+    public void shop(Hero h) throws ClassNotFoundException, IOException {
+        while (true) {
+            sinwrap.setMessage("Want to buy (b) or sell (s)? ");
+            Character token = sinwrap.nextChar();
+
+            if (token == null) {
+                if (sinwrap.isEnd())
+                    return;
+                else if (sinwrap.isQuit()) {
+                    Quest.quit(); return;
+                }
+                else if (sinwrap.isInfo()) {
+                    h.printFightingInfo();
+                    h.printInventory();
+                    System.out.println();
+                }
+            }
+            else {
+                if (Character.toUpperCase(token) == 'B')
+                {
+                    buy(h);
+                }
+                else if (Character.toUpperCase(token) == 'S') {
+                    sell(h);
+                }
+            }
+        }
+    }
+
+    /**
      * Shopping on one hero
      * @param hero Hero to shop
      * @throws ClassNotFoundException
