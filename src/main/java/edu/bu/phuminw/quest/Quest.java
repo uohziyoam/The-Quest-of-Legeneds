@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import java.util.function.Predicate;
 
 import edu.bu.phuminw.quest.board.Board;
 import edu.bu.phuminw.quest.board.Mark;
@@ -493,6 +492,7 @@ public class Quest {
      * 
      * @return Either this cell is normal or has monsters
      */
+    @SuppressWarnings({"unused"})
 
     private boolean isNormalCell() {
         return (rand.nextDouble() > 0.75); // Probability of being normal cell is 25%
