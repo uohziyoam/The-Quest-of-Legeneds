@@ -96,7 +96,9 @@ public abstract class Monster extends Creature implements Damagable {
 
             double finalDamage = (damage.getFirst() - defense > 0) ? damage.getFirst() - defense : 0;
             setHp((finalDamage >= getHp()) ? 0 : getHp() - finalDamage);
+            System.out.print(Color.ANSI_BLUE);
             System.out.printf("[!] %s was attacked %.2f%s\n", getName(), finalDamage, (getHp() == 0) ? " and died" : "");
+            System.out.println(Color.ANSI_RESET);
 
             
             // Check additional damage i.e. from spells
@@ -115,7 +117,10 @@ public abstract class Monster extends Creature implements Damagable {
             }
         }
         else {
-            System.out.printf("[!] %s dodged...\n", getName()); return true;
+            System.out.print(Color.ANSI_BLUE);
+            System.out.printf("[!] %s dodged...\n", getName());
+            System.out.println(Color.ANSI_RESET);
+            return true;
         }
 
         if (getHp() == 0) {

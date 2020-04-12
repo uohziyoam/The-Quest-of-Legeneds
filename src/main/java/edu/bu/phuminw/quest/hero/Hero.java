@@ -17,6 +17,7 @@ import edu.bu.phuminw.quest.market.IceSpell;
 import edu.bu.phuminw.quest.market.LightningSpell;
 import edu.bu.phuminw.quest.market.Potion;
 import edu.bu.phuminw.quest.market.Weapon;
+import edu.bu.phuminw.quest.util.Color;
 import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damagable;
 import edu.bu.phuminw.quest.util.Damage;
@@ -210,7 +211,9 @@ public abstract class Hero extends Creature implements Damagable {
         boolean win = false;
 
         if (canDodge()) {
+            System.out.print(Color.ANSI_RED);
             System.out.printf("[!] %s dodged ...\n", getName());
+            System.out.println(Color.ANSI_RESET);
             win = true;
         }
         else {
@@ -223,11 +226,15 @@ public abstract class Hero extends Creature implements Damagable {
                 
             if (damage >= getHp()) {
                 win = false; setHp(0);
+                System.out.print(Color.ANSI_RED);
                 System.out.printf("[!] %s was attacked %.2f and died\n", getName(), damage);
+                System.out.println(Color.ANSI_RESET);
             }
             else {
                 win = true; setHp(getHp() - damage);
+                System.out.print(Color.ANSI_RED);
                 System.out.printf("[!] %s was attacked %.2f\n", getName(), damage);
+                System.out.println(Color.ANSI_RESET);
             }
         }
 
