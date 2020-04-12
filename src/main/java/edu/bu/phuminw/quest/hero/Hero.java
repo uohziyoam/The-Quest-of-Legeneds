@@ -111,8 +111,12 @@ public abstract class Hero extends Creature implements Damagable {
         return favor;
     }
 
-    public void reduceMana() {
-        this.mana -= 20;
+    public boolean deductMana(int mana) {
+        if (this.mana < mana)
+            return false;
+            
+        this.mana -= mana;
+        return true;
     }
 
     @Override
@@ -251,25 +255,6 @@ public abstract class Hero extends Creature implements Damagable {
     public void lostMatch() {
         setHp(100*getLevel()/2);
     }
-
-    // /**
-    //  * Add an item to the inventory and deduct money if have enough money
-    //  * 
-    //  * @param <T> Item object
-    //  * @param price Item price
-    //  * @param item Item
-    //  * @return Buying result
-    //  * @deprecated
-    //  * @see addItem()
-    //  */
-
-    // public <T extends Item> boolean buy(double price, T item) {
-    //     if (money > price) {
-    //         money -= price;
-    //         return true;
-    //     }
-    //     return false;
-    // }
 
     /**
      * Interactive method asking a player whether to change any equipment, including potion.

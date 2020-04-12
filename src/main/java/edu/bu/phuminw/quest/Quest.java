@@ -45,8 +45,9 @@ public class Quest {
     public static final String CAVE = "C";
     public static final String KOULOU = "K";
     public static final String FORBIDDEN = "X";
-
+    
     private final int MONSPAWNROUND = 8;
+    private final int TELEPORTMANA = 50;
 
     private StdinWrapper sinwrap;
     private Random rand;
@@ -124,16 +125,17 @@ public class Quest {
         }
 
         // 5% of each special cell
-        int expectedBush = (int) Math.round(boardSize[0] * boardSize[1] * 0.05);
-        int expectedCave = (int) Math.round(boardSize[0] * boardSize[1] * 0.05);
-        int expectedKoulou = (int) Math.round(boardSize[0] * boardSize[1] * 0.05);
+        int expectedBush = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
+        int expectedCave = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
+        int expectedKoulou = (int) Math.round(boardSize[0]*boardSize[1]*0.05);
 
         int potentialPos; // Share temp variable among loops
 
         while (expectedBush > 0) {
             do {
-                potentialPos = rand.nextInt(boardSize[0] * boardSize[1]) + 1;
-            } while (board.getCell(potentialPos).getType() != null);
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
 
             board.getCell(potentialPos).setType(BUSH);
             plainCell.remove(Integer.valueOf(potentialPos));
@@ -142,8 +144,9 @@ public class Quest {
 
         while (expectedCave > 0) {
             do {
-                potentialPos = rand.nextInt(boardSize[0] * boardSize[1]) + 1;
-            } while (board.getCell(potentialPos).getType() != null);
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
 
             board.getCell(potentialPos).setType(CAVE);
             plainCell.remove(Integer.valueOf(potentialPos));
@@ -152,8 +155,9 @@ public class Quest {
 
         while (expectedKoulou > 0) {
             do {
-                potentialPos = rand.nextInt(boardSize[0] * boardSize[1]) + 1;
-            } while (board.getCell(potentialPos).getType() != null);
+                potentialPos = rand.nextInt(boardSize[0]*boardSize[1])+1;
+            }
+            while (board.getCell(potentialPos).getType() != null);
 
             board.getCell(potentialPos).setType(KOULOU);
             plainCell.remove(Integer.valueOf(potentialPos));
@@ -161,7 +165,7 @@ public class Quest {
         }
 
         // Assign the rest as plain cell
-        for (Integer pos : plainCell)
+        for (Integer pos: plainCell)
             board.getCell(pos).setType(PLAIN);
     }
 
@@ -457,21 +461,21 @@ public class Quest {
                                 Paladin pal = new Paladin(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
                                         toAdd.getSkills().getDex(), toAdd.getSkills().getAgi(), toAdd.getMoney(),
                                         toAdd.getExp());
-                                pal.setMark(new Mark("H" + (player.getNumHero() + 1)));
+                                pal.setMark(new Mark("H" + (player.getNumHero()+1)));
                                 player.addHero(pal);
                                 break;
                             case "SORCERER":
                                 Sorcerer sor = new Sorcerer(toAdd.getName(), toAdd.getMana(),
                                         toAdd.getSkills().getStr(), toAdd.getSkills().getDex(),
                                         toAdd.getSkills().getAgi(), toAdd.getMoney(), toAdd.getExp());
-                                sor.setMark(new Mark("H" + (player.getNumHero() + 1)));
+                                sor.setMark(new Mark("H" + (player.getNumHero()+1)));
                                 player.addHero(sor);
                                 break;
                             case "WARRIOR":
                                 Warrior war = new Warrior(toAdd.getName(), toAdd.getMana(), toAdd.getSkills().getStr(),
                                         toAdd.getSkills().getDex(), toAdd.getSkills().getAgi(), toAdd.getMoney(),
                                         toAdd.getExp());
-                                war.setMark(new Mark("H" + (player.getNumHero() + 1)));
+                                war.setMark(new Mark("H" + (player.getNumHero()+1)));
                                 player.addHero(war);
                                 break;
                             default:
@@ -489,7 +493,7 @@ public class Quest {
      * 
      * @return Either this cell is normal or has monsters
      */
-    @SuppressWarnings({ "unused" })
+    @SuppressWarnings({"unused"})
 
     private boolean isNormalCell() {
         return (rand.nextDouble() > 0.75); // Probability of being normal cell is 25%
@@ -523,15 +527,15 @@ public class Quest {
 
         // Map of each lane
         ArrayList<Tuple<Integer, Integer>> laneMap = new ArrayList<Tuple<Integer, Integer>>();
-        for (int i = ((row - 1) * boardSize[1]) + 1; i <= boardSize[1] * row;) {
-            int forbidInd = i + 1;
-
-            while (forbidInd <= boardSize[1] * row && !board.getCell(forbidInd).getType().equals(FORBIDDEN)) {
+        for (int i = ((row-1) * boardSize[1]) + 1 ; i <= boardSize[1]*row ;) {
+            int forbidInd = i+1;
+            
+            while (forbidInd <= boardSize[1]*row && !board.getCell(forbidInd).getType().equals(FORBIDDEN)) {
                 forbidInd++;
             }
 
-            laneMap.add(new Tuple<Integer, Integer>(i, forbidInd));
-            i = forbidInd + 1;
+            laneMap.add(new Tuple<Integer,Integer>(i, forbidInd));
+            i = forbidInd+1;
         }
 
         return laneMap;
@@ -540,8 +544,8 @@ public class Quest {
     /**
      * Randomly assign Creatures to given row. One per lane.
      * 
-     * @param <T>     Creature object
-     * @param row     Row to assign Creatures
+     * @param <T> Creature object
+     * @param row Row to assign Creatures
      * @param toPlace Creatures to place
      */
 
@@ -552,7 +556,7 @@ public class Quest {
         ListIterator<Tuple<Integer, Integer>> iter = rowMap.listIterator();
 
         // Place one by one from toPlace
-        for (T t : toPlace) {
+        for (T t: toPlace) {
             boolean assigned = false;
 
             while (!assigned) {
@@ -560,15 +564,14 @@ public class Quest {
                 ArrayList<Integer> lane = new ArrayList<Integer>();
 
                 // Space in the lane
-                for (Integer i = laneBound.getFirst(); i < laneBound.getSecond(); i++)
+                for (Integer i = laneBound.getFirst() ; i < laneBound.getSecond() ; i++)
                     lane.add(i);
 
                 // Shuffle for randomness
                 Collections.shuffle(lane);
 
-                for (Integer position : lane) {
-                    if (board.getCell(position).getType().equals(HERO_NEXUS)
-                            && board.getCell(position).getOccipier() == null) {
+                for (Integer position: lane) {
+                    if (board.getCell(position).getType().equals(HERO_NEXUS) && board.getCell(position).getOccipier() == null) {
                         board.getCell(position).set(t, t.getMark());
                         assigned = true;
                         t.setPosition(board.getCell(position));
@@ -584,7 +587,7 @@ public class Quest {
             }
         }
     }
-
+    
     /**
      * Create monsters of the requested size and based on max hero level
      * 
@@ -624,20 +627,20 @@ public class Quest {
             // Deep copy of an Item
             switch (toAdd.getClass().getSimpleName().toUpperCase()) {
                 case "DRAGON":
-                    Dragon d = new Dragon(toAdd.getName(), toAdd.getLevel(), toAdd.getBaseDamage() / 1.05,
-                            toAdd.getDefense(), toAdd.getDodge());
+                    Dragon d = new Dragon(toAdd.getName(), toAdd.getLevel(),
+                            toAdd.getBaseDamage() / 1.05, toAdd.getDefense(), toAdd.getDodge());
                     d.setMark(new Mark(d.getName().substring(0, 2).toUpperCase()));
                     monTeam.add(d);
                     break;
                 case "EXOSKELETON":
-                    Exoskeleton e = new Exoskeleton(toAdd.getName(), toAdd.getLevel(), toAdd.getBaseDamage(),
-                            toAdd.getDefense() / 1.05, toAdd.getDodge());
+                    Exoskeleton e = new Exoskeleton(toAdd.getName(), toAdd.getLevel(),
+                            toAdd.getBaseDamage(), toAdd.getDefense() / 1.05, toAdd.getDodge());
                     e.setMark(new Mark(e.getName().substring(0, 2).toUpperCase()));
                     monTeam.add(e);
                     break;
                 case "SPIRIT":
-                    Spirit s = new Spirit(toAdd.getName(), toAdd.getLevel(), toAdd.getBaseDamage(), toAdd.getDefense(),
-                            toAdd.getDodge() / 1.05);
+                    Spirit s = new Spirit(toAdd.getName(), toAdd.getLevel(), toAdd.getBaseDamage(),
+                            toAdd.getDefense(), toAdd.getDodge() / 1.05);
                     s.setMark(new Mark(s.getName().substring(0, 2).toUpperCase()));
                     monTeam.add(s);
                     break;
@@ -650,14 +653,13 @@ public class Quest {
     }
 
     /**
-     * Teleport given hero to other lane or do nothing if the player chooses to do
-     * so
+     * Teleport given hero to other lane or do nothing if the player chooses to do so
      * 
-     * @param h
+     * @param h Hero to teleport
      */
 
     private int teleport(Hero h) {
-        sinwrap.setMessage("Which position to transport to? ");
+        sinwrap.setMessage("Which position to transport to (cost 50 mana)? ");
         Integer dest;
 
         while (true) {
@@ -667,29 +669,31 @@ public class Quest {
             if (dest == null) {
                 if (sinwrap.isQuit()) {
                     Quest.quit();
-                } else if (sinwrap.isInfo())
+                } 
+                else if (sinwrap.isInfo())
                     board.print(true);
-            } else {
+                else if (sinwrap.isEnd())
+                    return -1;
+            }
+            else {
                 if (board.isInBoard(dest) && !board.getCell(dest).getType().equals(FORBIDDEN)) {
-                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(
-                            ((h.getPosition().getPosition() - 1) / 8) + 1);
+                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((h.getPosition().getPosition()-1)/8)+1);
 
                     // Tuple<Integer, Integer> oldLane = null;
                     int oldLane = -1;
                     int newLane = -1;
                     Tuple<Integer, Integer> newLaneTup = null;
 
-                    for (int i = 0; i < laneMap.size(); i++) {
-                        if (laneMap.get(i).getFirst() <= h.getPosition().getPosition()
-                                && h.getPosition().getPosition() < laneMap.get(i).getSecond()) {
+                    for (int i = 0 ; i < laneMap.size() ; i++) {
+                        if (laneMap.get(i).getFirst() <= h.getPosition().getPosition() && h.getPosition().getPosition() < laneMap.get(i).getSecond()) {
                             oldLane = i;
                             break;
                         }
                     }
 
-                    laneMap = getLaneMap(((dest - 1) / 8) + 1);
+                    laneMap = getLaneMap(((dest-1)/8)+1);
 
-                    for (int i = 0; i < laneMap.size(); i++) {
+                    for (int i = 0 ; i < laneMap.size() ; i++) {
                         if (laneMap.get(i).getFirst() <= dest && dest < laneMap.get(i).getSecond()) {
                             newLane = i;
                             newLaneTup = laneMap.get(i);
@@ -701,36 +705,32 @@ public class Quest {
                     if (newLane != oldLane) {
                         int[] boardSize = board.getSize();
 
-                        // Check if any enemy behind or in the row of the new destination
-                        boolean existMon = false;
-
-                        // Allow only moving to a position 2 cells ahead of a monster
-                        for (int rowOffset = 0; rowOffset < boardSize[0] - (dest - 1) / 8; rowOffset++) {
-                            for (int pos = newLaneTup.getFirst() + (rowOffset * boardSize[1]); pos < newLaneTup
-                                    .getSecond() + (rowOffset * boardSize[1]); pos++) {
-                                if (board.getCell(pos).getOccipier() instanceof Monster) {
-                                    if (dest < pos + 8) {
-                                        continue;
-                                    }
-                                }
+                        boolean clearToPlace = true;
+                        
+                        if (((dest-1)/8)+1 < 3) { // Teleport to monster nexus or adjacent, not allowed!
+                            clearToPlace = false;
+                        }
+                        
+                        // Check if any enemy behind or in the row of the new destination (go down the board)
+                        for (int rowOffset = 0 ; rowOffset < boardSize[0]-(dest-1)/8 && clearToPlace ; rowOffset++) {
+                            for (int pos = newLaneTup.getFirst()+(rowOffset*boardSize[1]) ; pos < newLaneTup.getSecond()+(rowOffset*boardSize[1]) && clearToPlace ; pos++) {
+                                if (board.getCell(pos).getOccipier() instanceof Monster)
+                                    clearToPlace = false;
+                                    // break;
+                                // }
                             }
+                            // if (!clearToPlace)
+                            //     break;
                         }
 
-                        for (int rowOffset = 0; rowOffset < boardSize[0] - (dest - 1) / 8; rowOffset++) {
-                            for (int pos = newLaneTup.getFirst() + (rowOffset * boardSize[1]); pos < newLaneTup
-                                    .getSecond() + (rowOffset * boardSize[1]); pos++) {
-                                if (board.getCell(pos).getOccipier() instanceof Monster) {
-                                    existMon = true;
-                                    break;
-                                }
-                            }
-                            if (existMon)
-                                break;
+                        // Check too near to monster
+                        for (int pos = newLaneTup.getFirst()-boardSize[1] ; pos < newLaneTup.getSecond()-boardSize[1] && clearToPlace ; pos++) {
+                            if (board.getCell(pos).getOccipier() instanceof Monster)
+                                clearToPlace = false;
                         }
 
                         // Clear to place at this position
-                        if (!existMon) {
-                            h.reduceMana();
+                        if (clearToPlace) {
                             return dest;
                         }
                     }
@@ -743,18 +743,14 @@ public class Quest {
      * Determine if either heros or monsters have won
      * 
      * @param playerHeroes Active heroes
-     * @param Monsters     Active monsters
+     * @param Monsters Active monsters
      * @return boolean value of whether either heros or monsters has won
      */
 
-    public boolean checkIfEnd(List<Hero> playerHeroes, ArrayList<Monster> monsters) {
+    public boolean checkIfEnd(List<Hero> playerHeroes, ArrayList<Monster> monsters){
         // if Heros win:
-        for (Hero h : playerHeroes) {
-            if (h.getPosition().getType().equals(MONSTER_NEXUS) && (h.getPosition().getPosition() - 1) / 8 == 0) { // Check
-                                                                                                                   // cell
-                                                                                                                   // type
-                                                                                                                   // and
-                                                                                                                   // row
+        for (Hero h: playerHeroes) {
+            if (h.getPosition().getType().equals(MONSTER_NEXUS) && (h.getPosition().getPosition()-1)/8 == 0) { // Check cell type and row
                 // This hero reached nexus
                 System.out.printf("%s has reached Monster's nexus. Game ended.\n", h.getName());
                 return true;
@@ -762,9 +758,8 @@ public class Quest {
         }
 
         // if Monsters win:
-        for (Monster m : monsters) {
-            if (m.getPosition().getType().equals(HERO_NEXUS)
-                    && (m.getPosition().getPosition() - 1) / 8 == board.getSize()[0] - 1) { // Check cell type and row
+        for (Monster m: monsters) {
+            if (m.getPosition().getType().equals(HERO_NEXUS) && (m.getPosition().getPosition()-1)/8 == board.getSize()[0]-1) { // Check cell type and row
                 // This monster reached nexus
                 System.out.printf("%s has reached Hero's nexus. Game ended.\n", m.getName());
                 return true;
@@ -810,68 +805,75 @@ public class Quest {
             while (!end) {
                 board.print(false);
                 /* 0) Enter market for heroes in nexus */
-                for (Hero h : playerHeroes) {
+                for (Hero h: playerHeroes) {
                     if (h.getPosition().getType().equals(HERO_NEXUS))
                         market.shop(h);
                 }
-
+                
                 /* 1) Spawn new monsters if in right timing */
                 if (round % MONSPAWNROUND == 0) {
                     ArrayList<? extends Monster> spawnedMon = spawnMonster(playerHeroes.size());
                     monsters.addAll(spawnedMon);
                     // Assign monsters to the first row
-                    randomAssignPerLane(1, spawnedMon);
+                    randomAssignPerLane(1,spawnedMon);
                 }
 
+                
                 /* 2) Move monsters forward */
-                for (Monster m : monsters)
-                    board.move(m.getPosition().getPosition(), m.getPosition().getPosition() + size[1]);
+                for (Monster m: monsters)
+                    board.move(m.getPosition().getPosition(), m.getPosition().getPosition()+size[1]);
 
                 /* 3) Move all heroes */
                 HashSet<Hero> movedHeroes = new HashSet<Hero>();
-
+                
                 // All three heroes must move, once each
                 while (movedHeroes.size() < 3) {
-                    board.print(false);
                     Hero toMove;
+                    
+                    board.print(false);
 
                     // Each hero can move once per round
                     do {
                         toMove = player.getHero();
                     } while (toMove == null || movedHeroes.contains(toMove));
-
+                
                     boolean valid = false;
-                    sinwrap.setMessage("Which direction to move (W/A/S/D/T/B)? ");
-
+                    
                     valid = false;
                     int currentPos = toMove.getPosition().getPosition();
                     int newPos = -1;
-
+                    
                     // Ask for move and store new position
                     while (!end && !valid) {
+                        board.print(false);
+                        sinwrap.setMessage("Which direction to move (W/A/S/D/T/B)? ");
                         Character choice = sinwrap.nextChar();
                         if (choice == null) {
                             if (sinwrap.isEnd() || sinwrap.isQuit()) {
                                 Quest.quit();
                                 return;
-                            } else if (sinwrap.isInfo())
+                            } 
+                            else if (sinwrap.isInfo())
                                 board.print(false);
                             else if (sinwrap.isTeleport()) {
-                                newPos = teleport(toMove);
-                                valid = true;
-                            } else if (sinwrap.isBackNexus()) {
+                                if ((newPos = teleport(toMove)) != -1) { // If valid flag is not set, will be overwritten anyway
+                                    if (toMove.deductMana(TELEPORTMANA))
+                                        valid = true;
+                                }
+                            }
+                            else if (sinwrap.isBackNexus()) {
                                 // Move down until reach nexus
                                 newPos = currentPos;
-                                while (newPos < (size[0] - 1) * size[1])
+                                while (newPos < (size[0]-1)*size[1])
                                     newPos += size[1];
 
                                 // Find alternative nexus if this one is occupied by some hero
                                 if (board.getCell(newPos).getOccipier() != null) {
-                                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((newPos - 1) / 8) + 1);
+                                    ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((newPos-1)/8)+1);
 
                                     Tuple<Integer, Integer> lane = null;
 
-                                    for (Tuple<Integer, Integer> l : laneMap) {
+                                    for (Tuple<Integer, Integer> l: laneMap) {
                                         if (l.getFirst() <= newPos && newPos < l.getSecond()) {
                                             lane = l;
                                             break;
@@ -879,9 +881,7 @@ public class Quest {
                                     }
 
                                     int i;
-                                    for (i = lane.getFirst(); i < lane.getSecond()
-                                            && board.getCell(i).getOccipier() != null; i++) {
-                                    }
+                                    for (i = lane.getFirst() ; i < lane.getSecond() && board.getCell(i).getOccipier() != null ; i++) {}
 
                                     newPos = i;
                                 }
@@ -935,27 +935,24 @@ public class Quest {
                 }
 
                 /* 5) Engage in fight: choose hero for fight */
-                // , fight (choose mon if > 1), check whether mon is cleared on row ahead all
-                // heroes
+                // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
                 boolean monAheadClear = false; // Flag indicating monsters right ahead heroes all clear
                 while (!end && !monAheadClear) {
                     // Clear monster one by one if that has some hero right ahead
                     int monMustFightNum = 0;
                     ArrayList<Monster> deadMon = new ArrayList<Monster>();
 
-                    for (Monster mToFight : monsters) {
+                    for (Monster mToFight: monsters) {
                         // Lane map of row right ahead this monster
-                        ArrayList<Tuple<Integer, Integer>> laneMapAheadMon = getLaneMap(
-                                ((mToFight.getPosition().getPosition() - 1) / 8) + 1);
+                        ArrayList<Tuple<Integer, Integer>> laneMapAheadMon = getLaneMap(((mToFight.getPosition().getPosition()-1)/8)+1);
 
                         // Will be used to check any hero ahead
                         Tuple<Integer, Integer> rowMon = null;
                         int laneNum = -1;
                         int i = 1;
 
-                        for (Tuple<Integer, Integer> l : laneMapAheadMon) {
-                            if (l.getFirst() <= mToFight.getPosition().getPosition()
-                                    && mToFight.getPosition().getPosition() < l.getSecond()) {
+                        for (Tuple<Integer, Integer> l: laneMapAheadMon) {
+                            if (l.getFirst() <= mToFight.getPosition().getPosition() && mToFight.getPosition().getPosition() < l.getSecond()) {
                                 rowMon = l;
                                 laneNum = i;
                                 break;
@@ -966,7 +963,7 @@ public class Quest {
                         ArrayList<Hero> heroAheadMon = new ArrayList<Hero>();
 
                         // Figure out any hero waiting ahead?
-                        for (i = rowMon.getFirst() + size[1]; i < rowMon.getSecond() + size[1]; i++) {
+                        for (i = rowMon.getFirst()+size[1] ; i < rowMon.getSecond()+size[1] ; i++) {
                             if (board.getCell(i).getOccipier() instanceof Hero)
                                 heroAheadMon.add((Hero) board.getCell(i).getOccipier());
                         }
@@ -982,9 +979,7 @@ public class Quest {
                                 Hero hToFight;
                                 do {
                                     board.print(false);
-                                    System.out.printf(
-                                            "Choosing hero to fight (only adjacent with %s (lane %d) and alive one will be accepted)\n",
-                                            mToFight.getName(), laneNum);
+                                    System.out.printf("Choosing hero to fight (only adjacent with %s (lane %d) and alive one will be accepted)\n", mToFight.getName(), laneNum);
                                     hToFight = player.getHero();
                                 } while (!heroAheadMon.contains(hToFight) || hToFight.getHp() <= 0);
 
@@ -1003,35 +998,33 @@ public class Quest {
                                         // This hero lose
                                         heroAheadMon.remove(hToFight);
 
-                                        // Move dead hero to nexus
+                                        //Move dead hero to nexus
                                         int newPos = hToFight.getPosition().getPosition();
-                                        while (newPos < (size[0] - 1) * size[1])
+                                        while (newPos < (size[0]-1)*size[1])
                                             newPos += size[1];
 
                                         // Find alternative nexus if this one is occupied by some hero
                                         if (board.getCell(newPos).getOccipier() != null) {
-                                            ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(
-                                                    ((newPos - 1) / 8) + 1);
+                                            ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(((newPos-1)/8)+1);
 
                                             Tuple<Integer, Integer> lane = null;
 
-                                            for (Tuple<Integer, Integer> l : laneMap) {
+                                            for (Tuple<Integer, Integer> l: laneMap) {
                                                 if (l.getFirst() <= newPos && newPos < l.getSecond()) {
                                                     lane = l;
                                                     break;
                                                 }
                                             }
 
-                                            for (i = lane.getFirst(); i < lane.getSecond()
-                                                    && board.getCell(i).getOccipier() != null; i++) {
-                                            }
+                                            for (i = lane.getFirst() ; i < lane.getSecond() && board.getCell(i).getOccipier() != null ; i++) {}
 
                                             newPos = i;
                                         }
 
                                         board.move(hToFight.getPosition().getPosition(), newPos);
                                     }
-                                } else {
+                                }
+                                else {
                                     // Player wanna end since heroDamage is null
                                     end = true;
                                 }
