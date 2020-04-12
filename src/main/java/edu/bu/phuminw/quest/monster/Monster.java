@@ -7,6 +7,7 @@ package edu.bu.phuminw.quest.monster;
 import java.util.Random;
 
 import edu.bu.phuminw.quest.board.Cell;
+import edu.bu.phuminw.quest.util.Color;
 import edu.bu.phuminw.quest.util.Creature;
 import edu.bu.phuminw.quest.util.Damagable;
 import edu.bu.phuminw.quest.util.Damage;
