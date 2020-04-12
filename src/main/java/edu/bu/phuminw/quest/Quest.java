@@ -898,11 +898,26 @@ public class Quest {
 
                 // Engage in fight: choose hero for fight
                 // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
-                for (Hero h: playerHeroes) {
-                    ArrayList<Hero> teleportedHero = new ArrayList<Hero>();
+                boolean monAheadClear = false; // Flag indicating monsters right ahead heroes all clear
+                while (!end && !monAheadClear) {
+                    // Clear monster one by one
+                    // HashMap<Monster, ArrayList<Hero>> monToHero = new HashMap<Monster, ArrayList<Hero>>();
 
-                    while (teleportedHero.size() < 3) {
-                        System.out.println("Selecting hero to teleport");
+                    for (Monster m: monsters) {
+                        // Lane map of row right ahead this monster
+                        ArrayList<Tuple<Integer, Integer>> laneMapAheadMon = getLaneMap(((m.getPosition().getPosition()-1)/8)+1);
+
+                        // Will be used to check any hero ahead
+                        Tuple<Integer, Integer> rowAheadMon = null;
+
+                        for (Tuple<Integer, Integer> l: laneMapAheadMon) {
+                            if (l.getFirst() <= m.getPosition().getPosition() && m.getPosition().getPosition() < l.getSecond()) {
+                                rowAheadMon = l;
+                                break;
+                            }
+                        }
+
+                        
                     }
                 }
 
