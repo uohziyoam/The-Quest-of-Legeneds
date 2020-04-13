@@ -729,6 +729,10 @@ public class Quest {
                             if (board.getCell(pos).getOccipier() instanceof Monster)
                                 clearToPlace = false;
                         }
+                        for (int pos = newLaneTup.getFirst()-2*boardSize[1] ; pos < newLaneTup.getSecond()-2*boardSize[1] && clearToPlace ; pos++) {
+                            if (board.getCell(pos).getOccipier() instanceof Monster)
+                                clearToPlace = false;
+                        }
 
                         // Clear to place at this position
                         if (clearToPlace) {
@@ -833,6 +837,7 @@ public class Quest {
                     Hero toMove;
                     
                     board.print(false);
+                    System.out.println("Moving heroes\n");
 
                     // Each hero can move once per round
                     do {
@@ -923,6 +928,32 @@ public class Quest {
                                     System.err.println("Unexpected error of choice in moving");
                             }
                         }
+                        if (board.getCell(newPos).getOccipier() != null) {
+                            valid = false;
+                        }
+
+                        /* Check downward for monster as hero must not move beyond any monster in that lane */
+                        int newPosRow = ((newPos-1)/8)+1;
+                        ArrayList<Tuple<Integer, Integer>> laneMap = getLaneMap(newPosRow); // This row map
+                        Tuple<Integer, Integer> laneRow = null;
+
+                        for (Tuple<Integer, Integer> l: laneMap) {
+                            if (l.getFirst() <= newPos && newPos < l.getSecond()) {
+                                laneRow = l;
+                                break;
+                            }
+                        }
+
+                        for (int rowOffset = 0 ; newPosRow + rowOffset <= size[0] ; rowOffset++) {
+                            for (int pos = laneRow.getFirst()+rowOffset*size[1] ; pos < laneRow.getSecond()+rowOffset*size[1] ; pos++) {
+                                if (board.getCell(pos).getOccipier() instanceof Monster) {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                            if (!valid)
+                                break;
+                        }
                     }
 
                     board.move(currentPos, newPos);
@@ -938,10 +969,11 @@ public class Quest {
 
                 /* 5) Engage in fight: choose hero for fight */
                 // , fight (choose mon if > 1), check whether mon is cleared on row ahead all heroes
-                boolean monAheadClear = false; // Flag indicating monsters right ahead heroes all clear
-                while (!end && !monAheadClear) {
+                // boolean clearToProceed = false; // Flag indicating fighting is done
+                if (!end) {
                     // Clear monster one by one if that has some hero right ahead
                     int monMustFightNum = 0;
+                    boolean fightOccur = false;
                     ArrayList<Monster> deadMon = new ArrayList<Monster>();
 
                     for (Monster mToFight: monsters) {
@@ -972,6 +1004,7 @@ public class Quest {
 
                         // Engage in fight when exists hero waiting ahead
                         if (heroAheadMon.size() > 0 && !end) {
+                            fightOccur = true;
                             monMustFightNum++;
                             board.print(false);
                             System.out.printf("\nFighting with %s in lane %d\n", mToFight.getName(), laneNum);
@@ -997,12 +1030,12 @@ public class Quest {
                                         mToFight.getPosition().set(null, new Mark(""));
                                     }
                                     if (!hToFight.attack(monDamage)) {
-                                        // This hero lose
+                                        // This hero dead
                                         heroAheadMon.remove(hToFight);
 
                                         //Move dead hero to nexus
                                         int newPos = hToFight.getPosition().getPosition();
-                                        while (newPos < (size[0]-1)*size[1])
+                                        while (newPos <= (size[0]-1)*size[1])
                                             newPos += size[1];
 
                                         // Find alternative nexus if this one is occupied by some hero
@@ -1025,6 +1058,12 @@ public class Quest {
 
                                         board.move(hToFight.getPosition().getPosition(), newPos);
                                     }
+
+                                    // Figure out any hero waiting ahead?
+                                    for (i = rowMon.getFirst()+size[1] ; i < rowMon.getSecond()+size[1] ; i++) {
+                                        if (board.getCell(i).getOccipier() instanceof Hero)
+                                            heroAheadMon.add((Hero) board.getCell(i).getOccipier());
+                                    }
                                 }
                                 else {
                                     // Player wanna end since heroDamage is null
@@ -1039,9 +1078,27 @@ public class Quest {
 
                     monsters.removeAll(deadMon);
 
-                    if (monMustFightNum == 0) {
-                        System.out.println("[!] All monsters head heroes are cleared");
-                        monAheadClear = true;
+                    if (fightOccur) {
+                        if (monMustFightNum == 0) {
+                            System.out.println("[!] All monsters ahead heroes are cleared");
+                            // clearToProceed = true;
+
+                            for (Hero h: playerHeroes) {
+                                if (h.getHp() > 0) {
+                                    // This hero still alive
+                                    h.winMatch(deadMon.get(0).getLevel());
+                                }
+                                else {
+                                    h.lostMatch();
+                                }
+                            }
+                        }
+                        else {
+                            System.out.println("[!] Some heroes died...");
+                            for (Hero h: playerHeroes) {
+                                h.lostMatch();
+                            }
+                        }
                     }
                 }
 
