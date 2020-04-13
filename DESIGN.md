@@ -105,3 +105,13 @@ startgame
 - (P+P1) Team.java - A collection of objects that belong together
 - (P+P1) Tuple.java - A packed data structure of two values
 - (P+JPY2) Quest.java - Main logic of the game
+
+## Authors
+
+### Group 2
+
+**Yizhou Mao**
+
+**Phumin Walaipatchara**
+
+**Jinshu Yang**

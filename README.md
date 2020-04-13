@@ -88,6 +88,8 @@ All entries is checked for duplication with the loaded entries (no duplicate her
 
 ## Authors
 
+### Group 2
+
 **Yizhou Mao**
 
 **Phumin Walaipatchara**
