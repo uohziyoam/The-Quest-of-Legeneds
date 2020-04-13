@@ -47,7 +47,7 @@ public class Quest {
     public static final String KOULOU = "K";
     public static final String FORBIDDEN = Color.ANSI_RED_BACKGROUND+"X"+Color.ANSI_RESET;
     
-    private final int MONSPAWNROUND = 8;
+    private final int MONSPAWNROUND = 2;
     private final int TELEPORTMANA = 50;
 
     private StdinWrapper sinwrap;
