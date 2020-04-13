@@ -243,6 +243,8 @@ public abstract class Hero extends Creature implements Damagable {
 
     /**
      * Process tasks after winning the match
+     * 
+     * @param movLv Monster level
      */
 
     public void winMatch(int monLv) {
