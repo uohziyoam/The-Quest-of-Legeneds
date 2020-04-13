@@ -1,4 +1,12 @@
+/**
+ * Author: Yizhou Mao
+ */
+
 package edu.bu.phuminw.quest.util;
+
+/**
+ * For colorful experience in the terminal :)
+ */
 
 public class Color {
     public static final String ANSI_RESET = "\u001B[0m";
