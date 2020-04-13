@@ -5,7 +5,6 @@
 package edu.bu.phuminw.quest.board;
 
 import edu.bu.phuminw.quest.Quest;
-import edu.bu.phuminw.quest.util.Color;
 /**
  * A individual cell of a board
  * 
