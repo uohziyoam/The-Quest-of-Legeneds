@@ -89,5 +89,7 @@ All entries is checked for duplication with the loaded entries (no duplicate her
 ## Authors
 
 **Yizhou Mao**
+
 **Phumin Walaipatchara**
+
 **Jinshu Yang**
