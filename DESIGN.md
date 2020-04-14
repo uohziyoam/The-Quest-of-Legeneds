@@ -72,7 +72,7 @@ startgame
 
 **num** = Level of modification/creation: 1 is few lines or few methods, 2 is about half changed, 3 is almost or completely changed
 
-- (P+PY1) Board.java - A class that encapsulates cells in a rectangle grid
+- (P+PY1) Board.java - A class that encapsulates cells in a rectangle grid; (For this class, instead of continuing using the String as a marker in the pervious assignment, we choose to create a Mark class to make it more flexible to deal with more modifications.)
 - (P+JP1) Cell.java - A class that encapsulates some object known as occupier
 - (P+P1) Mark.java - A class represents a mark String
 - (P+PY1) Hero.java - A creature and a template for hero object defining essential attributes that a hero subclass object must have
@@ -105,6 +105,8 @@ startgame
 - (P+P1) Team.java - A collection of objects that belong together
 - (P+P1) Tuple.java - A packed data structure of two values
 - (P+JPY2) Quest.java - Main logic of the game
+
+
 
 ## Authors
 
